@@ -118,10 +118,6 @@ describe Diaspora::Importer do
         @user, @person = @importer.parse_user_and_person(@doc)
       end
 
-      it 'should set username' do
-        @user.username.should == @old_user.username
-      end
-
       it 'should set private key' do
         @user.serialized_private_key.should_not be nil
         @user.serialized_private_key.should == @old_user.serialized_private_key
@@ -193,21 +189,15 @@ describe Diaspora::Importer do
       end
 
       it 'should import' do
-        User.delete_all
-        Person.delete_all
-        Post.delete_all
-        StatusMessage.delete_all
-        Aspect.delete_all
-        Comment.delete_all
-
+        DatabaseCleaner.clean
         User.count.should == 0
         Person.count.should == 0
         
         @importer.execute(@xml,
+                          :username => "bobbygrimm",
                           :email => "bob@bob.com",
                           :password => "bobbybob",
-                          :password_confirmation => "bobbybob",
-                          :diaspora_handle => "bob@diaspora.com")
+                          :password_confirmation => "bobbybob")
         
         User.count.should == 1
         n = User.first
@@ -215,9 +205,14 @@ describe Diaspora::Importer do
         n.aspects.count.should  == 6
         Person.count.should be == 5
         Comment.count.should be == 3
+        User.first.friends.count.should be > 0
 
-        User.first.person.diaspora_handle.should == User.first.diaspora_handle
-     
+
+        n.person.diaspora_handle.should == n.diaspora_handle
+        
+        
+
+
 
         Person.find_by_id( @user1.person.id ).nil?.should == false
         Person.find_by_id( @user2.person.id ).nil?.should == false

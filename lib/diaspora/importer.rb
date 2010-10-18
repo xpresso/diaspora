@@ -15,17 +15,13 @@ module Diaspora
       #assume data is good
       
       # to go 
+      user.username = opts[:username]
       user.email = opts[:email]
       user.password= opts[:password]
-      user.password_confirmation = opts[:pasword_confirmation]
+      user.password_confirmation = opts[:password_confirmation]
 
-     
-     
       user.person = person
-
-
-      user.person.diaspora_handle = opts[:diaspora_handle] 
-      
+      user.person.diaspora_handle = user.diaspora_handle
       user.visible_post_ids = filter[:whitelist].keys
 
       user.friend_ids = people.collect{ |x| x.id }
@@ -137,7 +133,6 @@ module Diaspora
       def parse_user_and_person(doc)
         user = User.new
         user_doc = doc.xpath('/export/user')
-        user.username = user_doc.xpath('//user/username').text
         user.serialized_private_key=  user_doc.xpath('//user/serialized_private_key').text
         person = Person.from_xml(user_doc.xpath('//user/person').to_s)
         [user, person]

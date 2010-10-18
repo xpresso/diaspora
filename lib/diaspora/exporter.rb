@@ -17,7 +17,6 @@ module Diaspora
           user_person_id = user.person.id
           xml.export {
             xml.user {
-              xml.username user.username
               xml.serialized_private_key user.serialized_private_key 
               
               xml.parent << user.person.to_xml
