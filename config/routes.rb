@@ -12,13 +12,13 @@ Diaspora::Application.routes.draw do
 
   devise_for :users, :controllers => {:registrations => "registrations",
                                       :password      => "devise/passwords",
-                                      :invitations    => "invitations"}
+                                      :invitations   => "invitations"}
   # added public route to user
   match 'public/:username',        :to => 'users#public'
   match 'users/export',            :to => 'users#export'
   match 'users/import',            :to => 'users#import'
   match 'users/export_photos',     :to => 'users#export_photos'
-  resources :users,         :except => [:create, :new, :show]
+  resources :users,                :except => [:create, :new, :show]
 
   match 'aspects/move_friends', :to => 'aspects#move_friends', :as => 'move_friends'
   match 'aspects/move_friend',  :to => 'aspects#move_friend', :as => 'move_friend'
@@ -38,6 +38,7 @@ Diaspora::Application.routes.draw do
 
   #signup
   match 'get_to_the_choppa', :to => redirect("/users/sign_up")
+  match 'users/sign_up/import', :to => 'users#new_import'
 
   #public routes
   match 'webfinger',            :to => 'publics#webfinger'

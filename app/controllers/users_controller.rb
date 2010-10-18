@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   require File.join(Rails.root, 'lib/collect_user_photos')
 
 
-  before_filter :authenticate_user!, :except => [:new, :create, :public, :import]
+  before_filter :authenticate_user!, :except => [:new, :create, :public, :import, :new_import]
 
   respond_to :html
 
@@ -83,12 +83,14 @@ class UsersController < ApplicationController
     User.invite!(:email => params[:email])
   end
   
+
+  def new_import
+    @user = User.new
+    render 'registrations/import', :layout => "session_wall"
+  end
   
   def import
     xml = params[:upload][:file].read
-
-    params[:user][:diaspora_handle] = 'asodij@asodij.asd'
-
 
     begin
       importer = Diaspora::Importer.new(Diaspora::Parsers::XML)
@@ -99,7 +101,7 @@ class UsersController < ApplicationController
       flash[:error] = "Derp, something went wrong: #{e.message}"
     end
 
-      redirect_to new_user_registration_path
+    redirect_to new_user_registration_path
     #redirect_to user_session_path
   end
 
