@@ -50,12 +50,6 @@ module Diaspora
 
             xml.posts {
               user.raw_visible_posts.find_all_by_person_id(user_person_id).each do |post|
-                #post_doc = post.to_xml
-                
-                #post.comments.each do |comment|
-                #  post_doc << comment.to_xml
-                #end
-
                 xml.parent << post.to_xml
               end
             }
@@ -65,7 +59,7 @@ module Diaspora
         # This is a hack.  Nokogiri interprets *.to_xml as a string.
         # we want to inject document objects, instead.  See lines: 25,35,40.
         # Solutions?
-        CGI.unescapeHTML(builder.to_xml.to_s)
+        CGI.unescapeHTML(builder.to_xml)
       end
     end
   end

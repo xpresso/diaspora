@@ -43,6 +43,12 @@ describe Diaspora::Importer do
     @status_message6 = @user3.post(:status_message, :message => "Six", :public => false, :to => @aspect6.id)
     @status_message7 = @user5.post(:status_message, :message => "Seven", :public => false, :to => @aspect9.id)
 
+    @comment1 = @user1.comment "i love bob", :on => @status_message1
+    @comment2 = @user2.comment "i love mom", :on => @status_message1
+    @comment3 = @user3.comment "i love dan", :on => @status_message1
+
+    @status_message1.reload
+
     @aspect1.posts << @status_message1
     @aspect2.posts << @status_message2
     @aspect3.posts << @status_message3
@@ -151,15 +157,20 @@ describe Diaspora::Importer do
       end
     end
 
-    describe '#parse_posts' do
+    describe '#parse_posts_and_comments' do
       let(:posts) { @importer.parse_posts(@doc) }
+      let(:comments) { @importer.parse_comments(@doc) }
 
-      it 'should return an array' do
+      it 'should return an array of posts' do
         posts.count.should == 4
       end
 
       it 'should return vaild posts' do         
         posts.all?(&:valid?).should be true
+      end
+
+      it 'should return an array of comments' do
+        comments.count.should == 3
       end
     end
 
@@ -182,12 +193,12 @@ describe Diaspora::Importer do
       end
 
       it 'should import' do
-        pending "there is some weirdness with diaspora handle we need to look into... and this test is terrible"
         User.delete_all
         Person.delete_all
         Post.delete_all
         StatusMessage.delete_all
         Aspect.delete_all
+        Comment.delete_all
 
         User.count.should == 0
         Person.count.should == 0
@@ -195,14 +206,15 @@ describe Diaspora::Importer do
         @importer.execute(@xml,
                           :email => "bob@bob.com",
                           :password => "bobbybob",
-                          :password => "bobbybob",
+                          :password_confirmation => "bobbybob",
                           :diaspora_handle => "bob@diaspora.com")
         
         User.count.should == 1
         n = User.first
         Post.count.should == 4 
         n.aspects.count.should  == 6
-        Person.count.should be == 5 
+        Person.count.should be == 5
+        Comment.count.should be == 3
 
         User.first.person.diaspora_handle.should == User.first.diaspora_handle
      
@@ -223,12 +235,6 @@ describe Diaspora::Importer do
         
         n.friends.count.should be 4
       end
-
-      
-
     end
-
   end
-
 end
-

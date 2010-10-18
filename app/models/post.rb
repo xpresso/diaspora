@@ -13,8 +13,11 @@ class Post
 
   xml_accessor :_id
   xml_accessor :person, :as => Person
-  xml_reader   :public
+  xml_reader :person_id
+  xml_reader :public
   xml_reader :created_at
+  xml_reader :comments, :as => [Comment]
+
 
   key :public   , Boolean, :default => false
 

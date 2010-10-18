@@ -9,7 +9,8 @@ module Diaspora
       self.class.send(:include, strategy)
     end
     
-    def commit(user, person, aspects, people, posts, opts = {})
+    def commit(user, person, aspects, people, posts, comments, opts = {})
+      
       filter = verify_and_clean(user, person, people, aspects, posts)
       #assume data is good
       
@@ -37,12 +38,14 @@ module Diaspora
         post.save! if filter[:unknown].include? post.id
       end
 
+      comments.each do |comment|
+        comment.save!
+      end
 
 
       aspects.each do |aspect|
         user.aspects << aspect
       end
-
 
 
       people.each do |p|
@@ -57,9 +60,7 @@ module Diaspora
       verify_person_for_user(user, person)
       filters = filter_posts(posts, person)
 
-
       clean_aspects(aspects, filters[:whitelist])
-
 
       filters[:people] = filter_people(people)
       filters  
@@ -128,9 +129,9 @@ module Diaspora
         aspects = parse_aspects(doc)
         people = parse_people(doc)
         posts = parse_posts(doc)
+        comments = parse_comments(doc)
 
-        user
-        commit(user, person, aspects, people, posts, opts)
+        commit(user, person, aspects, people, posts, comments, opts)
       end
 
       def parse_user_and_person(doc)
@@ -168,12 +169,20 @@ module Diaspora
 
       def parse_posts(doc)
         post_doc = doc.xpath('/export/posts/status_message')
-        post_doc.inject([]) do |posts,curr|
-          posts << StatusMessage.from_xml(curr.to_s)
+        post_doc.inject([]) do |posts, curr_post|
+          curr_post.xpath("//person").remove
+          posts << StatusMessage.from_xml(curr_post.to_s)
+        end
+      end
+
+      def parse_comments(doc)
+        comment_doc = doc.xpath('//comment')
+        comment_doc.inject([]) do |comments, curr_comment|
+          curr_comment.xpath("//person").remove
+          comments << Comment.from_xml(curr_comment.to_s)
         end
       end
 
     end
-
   end
 end

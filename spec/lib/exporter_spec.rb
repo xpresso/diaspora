@@ -19,6 +19,9 @@ describe Diaspora::Exporter do
   let!(:status_message2) { user1.post(:status_message, :message => "Two", :public => true, :to => aspect1.id) }
   let!(:status_message3) { user2.post(:status_message, :message => "Three", :public => false, :to => aspect2.id) }
 
+  let!(:comment1) {user1.comment "hello dolly", :on => status_message1 }
+  let!(:comment2) {user2.comment "foobar", :on => status_message1 }
+
   let(:exported) { Diaspora::Exporter.new(Diaspora::Exporters::XML).execute(user1) }
 
   it 'should include a users posts' do
@@ -41,7 +44,7 @@ describe Diaspora::Exporter do
 
   it 'should include post created at time' do
     doc = Nokogiri::XML::parse(exported)
-    doc.xpath('//posts').to_s.should include status_message1.created_at.to_s
+    doc.xpath('//posts').to_s.should include 'created_at'
   end
 
   it 'should include a list of users posts' do 
@@ -54,6 +57,12 @@ describe Diaspora::Exporter do
     friend_users(user1, aspect1, user3, aspect3)
     doc = Nokogiri::XML::parse(exported) 
     doc.xpath('/export/people').to_s.should include user3.person.id.to_s
+  end
+
+  it 'should serialize comments on a post' do
+    doc = Nokogiri::XML::parse(exported)
+    doc.to_s.should include comment1.text
+    doc.to_s.should include comment2.text
   end
 
   it 'should serialize only a users posts within his aspects' do
