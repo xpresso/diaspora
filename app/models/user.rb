@@ -323,7 +323,7 @@ class User
       self.password_confirmation = opts[:password_confirmation]
       opts[:person][:diaspora_handle] = "#{opts[:username]}@#{APP_CONFIG[:terse_pod_url]}"
       opts[:person][:url] = APP_CONFIG[:pod_url]
-
+  
       opts[:serialized_private_key] = User.generate_key
       self.serialized_private_key =  opts[:serialized_private_key]
       opts[:person][:serialized_public_key] = opts[:serialized_private_key].public_key

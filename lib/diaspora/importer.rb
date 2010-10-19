@@ -31,7 +31,11 @@ module Diaspora
       user.person.save!
       
       posts.each do |post|
-        post.save! if filter[:unknown].include? post.id
+        if filter[:unknown].include? post.id
+          puts post.person_id.inspect
+          post.person = person
+          post.save! 
+        end
       end
 
       comments.each do |comment|

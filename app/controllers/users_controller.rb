@@ -90,19 +90,28 @@ class UsersController < ApplicationController
   end
   
   def import
-    xml = params[:upload][:file].read
+    puts params.inspect
+    unless valid_import_credentials?(params[:user])
 
-    begin
-      importer = Diaspora::Importer.new(Diaspora::Parsers::XML)
-      importer.execute(xml, params[:user])
-      flash[:notice] = "hang on a sec, try logging in!"
+      flash[:error] = "there was a problem with some of the fields provided.  did you correctly enter your password? maybe your username is taken?"
+      redirect_to users_sign_up_import_path
 
-    rescue Exception => e
-      flash[:error] = "Derp, something went wrong: #{e.message}"
+    else
+      
+      
+      xml = params[:upload][:file].read
+
+      begin
+        importer = Diaspora::Importer.new(Diaspora::Parsers::XML)
+        importer.execute(xml, params[:user])
+        flash[:notice] = "hang on a sec, try logging in!"
+
+      rescue Exception => e
+        flash[:error] = "Derp, something went wrong: #{e.message}"
+      end
+
+      redirect_to new_user_registration_path
     end
-
-    redirect_to new_user_registration_path
-    #redirect_to user_session_path
   end
 
 
@@ -121,6 +130,15 @@ class UsersController < ApplicationController
     end
   end
 
+  def valid_import_credentials?(opts)
+    if opts[:username] && opts[:email] && opts[:password] && opts[:password_confirmation]
+      #return !User.where(:username => opts[:username].downcase.strip).where(:email => opts[:email].downcase.strip) &&
+      #  (opts[:password] == opts[:password_confirmation])
+      return true
+    end
+    false
+  end
+  
   def clean_hash(params)
     return {
       :profile =>
