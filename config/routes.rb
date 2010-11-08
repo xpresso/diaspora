@@ -20,7 +20,10 @@ Diaspora::Application.routes.draw do
   match 'getting_started',           :to => 'users#getting_started', :as => 'getting_started'
   match 'users/export',              :to => 'users#export'
   match 'users/export_photos',       :to => 'users#export_photos'
-  resources :users,                  :except => [:create, :new, :show]
+
+  resources :users, :except => [:create, :new, :show] do
+    get :edit_private_profile, :on => :member
+  end
 
   match 'aspects/move_friend',  :to => 'aspects#move_friend', :as => 'move_friend'
   match 'aspects/add_to_aspect',:to => 'aspects#add_to_aspect', :as => 'add_to_aspect'

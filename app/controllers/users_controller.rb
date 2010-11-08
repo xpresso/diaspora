@@ -23,28 +23,32 @@ class UsersController < ApplicationController
       boolean = params[:user][:getting_started] == "true"
       @user.update_attributes( :getting_started => boolean )
       redirect_to root_path
-
-    else
-      params[:user].delete(:password) if params[:user][:password].blank?
-      params[:user].delete(:password_confirmation) if params[:user][:password].blank? and params[:user][:password_confirmation].blank?
-      params[:user].delete(:language) if params[:user][:language].blank?
-
-      if params[:user][:password] && params[:user][:password_confirmation]
-        if @user.update_attributes(:password => params[:user][:password], :password_confirmation => params[:user][:password_confirmation])
-          flash[:notice] = I18n.t 'users.update.password_changed'
-        else
-          flash[:error] = I18n.t 'users.update.password_not_changed'
-        end
-      elsif params[:user][:language]
-        if @user.update_attributes(:language => params[:user][:language])
-          flash[:notice] = I18n.t 'users.update.language_changed'
-        else
-          flash[:error] = I18n.t 'users.update.language_not_changed'
-        end
-      end
-
-      redirect_to edit_user_path(@user)
+      return
     end
+
+    params[:user].delete(:password) if params[:user][:password].blank?
+    params[:user].delete(:password_confirmation) if params[:user][:password].blank? and params[:user][:password_confirmation].blank?
+    params[:user].delete(:language) if params[:user][:language].blank?
+
+    if params[:user][:password] && params[:user][:password_confirmation]
+      if @user.update_attributes(:password => params[:user][:password], :password_confirmation => params[:user][:password_confirmation])
+        flash[:notice] = I18n.t 'users.update.password_changed'
+      else
+        flash[:error] = I18n.t 'users.update.password_not_changed'
+      end
+    elsif params[:user][:language]
+      if @user.update_attributes(:language => params[:user][:language])
+        flash[:notice] = I18n.t 'users.update.language_changed'
+      else
+        flash[:error] = I18n.t 'users.update.language_not_changed'
+      end
+    elsif params[:user][:private_profile]
+      @user.private_profile = PrivateProfile.new(params[:user][:private_profile])
+      @user.save!
+      flash[:notice] = "Successfully updated the private profile"
+    end
+
+    redirect_to edit_user_path(@user)
   end
 
   def destroy

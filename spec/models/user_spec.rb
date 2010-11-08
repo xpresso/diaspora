@@ -14,6 +14,10 @@ describe User do
     user.encryption_key.should_not be nil
   end
 
+  it 'has a private profile' do    
+    user.associations[:private_profile].type.should == :one
+  end
+
   describe 'overwriting people' do
     it 'does not overwrite old users with factory' do
       pending "Why do you want to set ids directly? MONGOMAPPERRRRR!!!"

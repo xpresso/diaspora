@@ -48,6 +48,8 @@ class User
 
   one :person, :class_name => 'Person', :foreign_key => :owner_id
 
+  one :private_profile, :class_name => 'PrivateProfile'
+
   many :inviters, :in => :inviter_ids, :class_name => 'User'
   many :friends, :in => :friend_ids, :class_name => 'Contact'
   many :visible_people, :in => :visible_person_ids, :class_name => 'Person' # One of these needs to go
