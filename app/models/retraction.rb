@@ -10,7 +10,6 @@ class Retraction
   xml_accessor :post_id
   xml_accessor :diaspora_handle
   xml_accessor :type
-  xml_accessor :comment_id
   xml_accessor :comment_creator_signature
   
 
@@ -22,8 +21,7 @@ class Retraction
       retraction.post_id = object.person.id
       retraction.type = object.person.class.to_s
     elsif object.is_a? Comment
-      retraction.post_id = object.post_id
-      retraction.comment_id = object.id
+      retraction.post_id = object.id
       retraction.type = object.class.to_s
     else
       retraction.post_id = object.id
@@ -60,14 +58,14 @@ class Retraction
   end
 
   def signable_string
-    [self.class, self.type, self.comment_id].join ';'
+    [self.class, self.type, self.post_id].join ';'
   end
 
   private
 
   def perform_comment receiving_user_id
-    Rails.logger.debug("Retracting #{self.type} id: #{self.comment_id}")
-    comment = self.type.constantize.find_by_id(comment_id) 
+    Rails.logger.debug("Retracting #{self.type} id: #{self.post_id}")
+    comment = self.type.constantize.find_by_id(post_id) 
     if comment
       raise "Comment Retraction with invalid signature" unless verify_signature(comment_creator_signature, comment.person)
       comment.unsocket_from_uid receiving_user_id if comment.respond_to? :unsocket_from_uid

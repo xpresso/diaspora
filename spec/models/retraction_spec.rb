@@ -48,7 +48,7 @@ describe Retraction do
 
       it 'sets the comment_id' do
         retraction = Retraction.for(comment)
-        retraction.comment_id.should == comment.id
+        retraction.post_id.should == comment.id
       end
     end
   end
@@ -116,13 +116,31 @@ describe Retraction do
       proc{ comment2.reload}.should raise_error /does not exist/
     end
 
-    it 'sends a retraction downstream' do
-      retraction = user2.retract_comment(comment2)
-      user.should_receive(:push_to_person).once
-      Retraction.should_receive(:perform).with(user.id, user3.id)
+    context 'pushing downstream' do
+      it 'sends the retraction downstream' do
+        user2.should_receive(:push_to_people)
+        retraction = user2.retract_comment(comment2)
+
+        user.should_receive(:push_to_person).once
+        user.receive retraction.to_diaspora_xml, user2.person
+      end
+
+      it 'gets retracted correctly for the downstream user' do
+        user2.should_receive(:push_to_people)
+        retraction = user2.retract_comment(comment2)
+
+        user.should_receive(:push_to_person).once
+        user.receive retraction.to_diaspora_xml, user2.person
+
+        comment.save
+        comment2.reload.should_not be_nil
+        retraction.diaspora_handle = user.diaspora_handle
+        user3.receive retraction.to_diaspora_xml, user.person
+        
+        proc{ comment2.reload}.should raise_error /does not exist/
+
+      end
     end
-
-
 
   end
 

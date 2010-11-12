@@ -85,12 +85,17 @@ module Diaspora
           disconnected_by visible_person_by_id(retraction.post_id)
 
         elsif retraction.type == "Comment"
-          comment = Comment.find(retraction.comment_id)
-          retraction.perform self.id
+
           
-          retraction.diaspora_handle = self.diaspora_handle
-          #push_to_people retraction, people_in_aspects(aspects_with_post(retraction.post_id)) - comment.person
-          
+          if comment = Comment.find(retraction.post_id)
+            retraction.perform self.id
+
+            downstream_people = people_in_aspects(aspects_with_post(comment.post_id))
+            downstream_people -= comment.person
+
+            retraction.diaspora_handle = self.diaspora_handle
+            push_to_people retraction, downsteam_people
+          end
         else
           retraction.perform self.id
           aspects = self.aspects_with_person(retraction.person)
