@@ -91,10 +91,10 @@ module Diaspora
             retraction.perform self.id
 
             downstream_people = people_in_aspects(aspects_with_post(comment.post_id))
-            downstream_people -= comment.person
+            downstream_people.delete(comment.person)
 
             retraction.diaspora_handle = self.diaspora_handle
-            push_to_people retraction, downsteam_people
+            push_to_people retraction, downstream_people
           end
         else
           retraction.perform self.id

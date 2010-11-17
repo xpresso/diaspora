@@ -309,9 +309,9 @@ class User
   end
 
   def retract_comment(comment)
-    retraction = Retraction.for(comment)
-    retraction.comment_creator_signature = retraction.sign_with_key(encryption_key)
-    
+
+    retraction = build_comment_retraction(comment)
+
     if owns?(comment.post)
       push_to_people retraction, people_in_aspects(aspects_with_post(comment.post.id))
     else
@@ -319,6 +319,12 @@ class User
     end
 
     retraction    
+  end
+
+  def build_comment_retraction(comment)
+    retraction = Retraction.for(comment)
+    retraction.comment_creator_signature = retraction.sign_with_key(encryption_key)
+    retraction
   end
 
   ########### Profile ######################
