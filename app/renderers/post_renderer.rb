@@ -29,6 +29,14 @@ class PostRenderer < Hash
   def comments= new_comments
     self[:comments] = new_comments.map{|c| CommentRenderer.new(c)}
   end
+  def reshare_pane
+    reshare_aspects = aspects_without_post(aspects, post)
+    if reshare_aspects.empty?
+      ""
+    else
+      
+    end
+  end
   def to_html
 "<li class='message' data-guid='#{post.id}'>
   #{person_image_link(person)}
@@ -38,16 +46,7 @@ class PostRenderer < Hash
       <div class='aspect'>
         \u2794
         <ul>
-          <li>
-            <a href='/aspects/4ce9767acc8cb42ef9000005'>
-              Work
-            </a>
-          </li>
-          <li>
-            <a href='/aspects/4ce9767acc8cb42ef9000004'>
-              Family
-            </a>
-          </li>
+          #{aspect_links(aspects_with_post(aspects, post)}
         </ul>
       </div>
       <div class='right'>
