@@ -22,11 +22,14 @@ describe CommentRenderer do
       time = Benchmark.realtime{
         @controller.render_to_string(@r_opts)
       }
-      (time*1000).should < 10
+      (time*1000).should < 12
     end
     it 'is correct' do
       v = @controller.render_to_string(@r_opts)
-      v.gsub!(/^s+/,'').should == @renderer.to_html.gsub!(/^s+/,'')
+      s = @renderer.to_html
+      no_space_v = v.gsub(/\s+/,'')
+      no_space_s = s.gsub(/\s+/,'')
+      no_space_s.should == no_space_v
     end
     it 'is fast' do
       time = Benchmark.realtime{

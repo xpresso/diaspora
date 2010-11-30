@@ -30,15 +30,11 @@ class PostRenderer < Hash
     self[:comments] = new_comments.map{|c| CommentRenderer.new(c)}
   end
   def to_html
-"<li class='message' data-guid='4cf4b8f2cc8cb40bec00001e'>
-  <a href='/people/4ce97679cc8cb42ef9000003'>
-    <img alt='Alexander Hamiltom' class='avatar' data-person_id='4ce97679cc8cb42ef9000003' src='/images/user/tom.jpg' title='Alexander Hamiltom'>
-  </a>
+"<li class='message' data-guid='#{post.id}'>
+  #{person_image_link(person)}
   <div class='content'>
     <div class='from'>
-      <a href='/people/4ce97679cc8cb42ef9000003'>
-        Alexander Hamiltom
-      </a>
+      #{person_link(person)}
       <div class='aspect'>
         \u2794
         <ul>

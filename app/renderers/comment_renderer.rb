@@ -19,16 +19,12 @@ class CommentRenderer < Hash
   end
   def to_html
 "<li class='comment' data-guid='#{comment.id}'>
-  <a href='/people/#{person.id}'>
-    <img alt='#{person.real_name}' class='avatar' data-person_id='4ce97679cc8cb42ef9000002' src='#{image_or_default(person)}' title='#{person.real_name}'>
-  </a>
+  #{person_image_link(person)}
   <div class='content'>
     <div class='from'>
-      <a href='/people/#{person.id}'>
-        Alexander Hamiltom
-      </a>
+      #{person_link(person)}
     </div>
-    iusdfbiuh
+    #{markdownify(comment.text, :youtube_maps => comment[:youtube_titles])}
     <div class='time'>
       #{comment.created_at ? "#{time_ago_in_words(comment.created_at)} #{t('ago')}" : time_ago_in_words(Time.now)}
     </div>
