@@ -1,15 +1,109 @@
 class PostRenderer < Hash
-  def initialize opts
-    self.person=opts[:person]
-    self.post=opts[:post]
-    self.aspects=opts[:person]
-    self.comments=opts[:comments]
+  include ApplicationHelper
+  include ActionView::Helpers
+  include StreamHelper
+  GSUB_THIS = "___GSUB___THIS___".html_safe
+  def initialize opts = {}
+    self.person        = opts[:person]
+    self.post          = opts[:post]
+    self.aspects       = opts[:aspects]
+    self.comments      = opts[:comments]
+    self.photos        = opts[:photos]
+    self.form_tag_text = opts[:form_tag_text]
+  end
+  def reshare_pane
+    reshare_aspects = aspects_without_post(aspects, post)
+    if reshare_aspects.empty?
+      ""
+    else
+"<div class='reshare_pane'>
+  <span class='reshare_button'>
+    <a href=\"#\">
+      Reshare
+    </a>
+  </span>
+  <ul class='reshare_box'>
+    #{aspect_links(reshare_aspects, :prefill => post.message)}
+  </ul>
+</div>
+"
+    end
+  end
+  def post_section
+    str = "<p>
+            #{markdownify(post.message, :youtube_maps => post[:youtube_titles])}
+          </p>"
+    if photos.count < 0
+      str << "<div class='photo_attachments'>
+        <a href=\"/photos/4cf4b8eccc8cb40bec00001d\"><img alt=\"Thumb_medium_ar027djoo04cf4b8eccc8cb40bec00001d\" src=\"/uploads/images/thumb_medium_aR027djoo04cf4b8eccc8cb40bec00001d.jpg?1291106542\" /></a>\n    
+      </div>"
+    end
+    str
+  end
+  def comments_class
+    cclass = "comments"
+    cclass << "hidden" if comments.empty?
+    cclass
+  end
+  def comment_lis
+    str = ""
+    comments.each{|c| str << c.to_html}
+    str
+  end
+  def new_comment_form
+    form_tag_text.gsub(GSUB_THIS, post.id.to_s)
+  end
+  def comments_section
+    "<ul class='#{comments_class}' id='#{post.id}'>
+      #{comment_lis}
+      <li class='comment show'>
+        #{new_comment_form}
+      </li>
+    </ul>"
+  end
+  def to_html
+"<li class='message' data-guid='#{post.id}'>
+  #{person_image_link(person)}
+  <div class='content'>
+    <div class='from'>
+      #{person_link(person)}
+      <div class='aspect'>
+        ➔
+        <ul>
+          #{aspect_links(aspects_with_post(aspects, post))}
+        </ul>
+      </div>
+      <div class='right'>
+        #{reshare_pane}
+        <a href=\"/status_messages/#{post.id}\" class=\"delete\" data-confirm=\"Are you sure?\" data-method=\"delete\" data-remote=\"true\" rel=\"nofollow\">
+          Delete
+        </a>
+      </div>
+    </div>
+    #{post_section}
+    <div class='info'>
+      <span class='time'>
+        <a href=\"/status_messages/#{post.id}\">
+          #{how_long_ago(post)}
+        </a>
+      </span>
+      #{comment_toggle(comments.length)}
+    </div>
+    #{comments_section}
+  </div>
+</li>"
   end
   def aspects
     self[:aspects]
   end
-  def aspects= new_aspect
-    self[:aspects] = new_aspect
+  def aspects= new_aspects
+    self[:aspects] = new_aspects
+  end
+  def photos
+    self[:photos]
+  end
+  def photos= new_photos
+    self[:photos] = new_photos
   end
   def post
     self[:post]
@@ -29,76 +123,13 @@ class PostRenderer < Hash
   def comments= new_comments
     self[:comments] = new_comments.map{|c| CommentRenderer.new(c)}
   end
-  def reshare_pane
-    reshare_aspects = aspects_without_post(aspects, post)
-    if reshare_aspects.empty?
-      ""
-    else
-      
-    end
+  def form_tag_text
+    self[:form_tag_text]
   end
-  def to_html
-"<li class='message' data-guid='#{post.id}'>
-  #{person_image_link(person)}
-  <div class='content'>
-    <div class='from'>
-      #{person_link(person)}
-      <div class='aspect'>
-        \u2794
-        <ul>
-          #{aspect_links(aspects_with_post(aspects, post)}
-        </ul>
-      </div>
-      <div class='right'>
-        <div class='reshare_pane'>
-          <span class='reshare_button'>
-            <a href=\"#\">
-              Reshare
-            </a>
-          </span>
-          <ul class='reshare_box'>
-            <li class='aspect_to_share'>
-              <a href=\"/aspects/4ce9767acc8cb42ef9000005?prefill=hey\">Work</a>
-            </li>
-            <li class='aspect_to_share'>
-              <a href=\"/aspects/4ce9767acc8cb42ef9000004?prefill=hey\">Family</a>
-            </li>
-          </ul>
-        </div>
-        <a href=\"/status_messages/4cf4b8f2cc8cb40bec00001e\" class=\"delete\" data-confirm=\"Are you sure?\" data-method=\"delete\" data-remote=\"true\" rel=\"nofollow\">
-          Delete
-        </a>
-      </div>
-    </div>
-    <p>
-      hey
-    </p>
-    <div class='photo_attachments'>
-      <a href=\"/photos/4cf4b8eccc8cb40bec00001d\"><img alt=\"Thumb_medium_ar027djoo04cf4b8eccc8cb40bec00001d\" src=\"/uploads/images/thumb_medium_aR027djoo04cf4b8eccc8cb40bec00001d.jpg?1291106542\" /></a>\n    
-    </div>
-    <div class='info'>
-      <span class='time'>
-        <a href=\"/status_messages/4cf4b8f2cc8cb40bec00001e\">less than a minute ago</a>
-      </span>
-      <a href=\"#\" class=\"show_post_comments\">show comments (0)</a>
-    </div>
-    <ul class='comments hidden' id='4cf4b8f2cc8cb40bec00001e'>
-      <li class='comment show'>
-        <form accept-charset=\"UTF-8\" action=\"/comments\" class=\"new_comment\" data-remote=\"true\" id=\"new_comment_on_4cf4b8f2cc8cb40bec00001e\" method=\"post\">
-          <div style=\"margin:0;padding:0;display:inline\">
-            <input name=\"utf8\" type=\"hidden\" value=\"&#x2713;\" />
-            <input name=\"authenticity_token\" type=\"hidden\" value=\"1AZGI6+7XNlTllhb492ZnJe7kIQzIJqbyAoVeRHUWJA=\" />
-          </div>
-          <p>
-            <label for=\"comment_text_on_4cf4b8f2cc8cb40bec00001e\">Comment</label>
-            <textarea class=\"comment_box\" id=\"comment_text_on_4cf4b8f2cc8cb40bec00001e\" name=\"text\" rows=\"1\"></textarea>
-          </p>
-          <input id=\"post_id_on_4cf4b8f2cc8cb40bec00001e\" name=\"post_id\" type=\"hidden\" value=\"4cf4b8f2cc8cb40bec00001e\" />
-          <input class=\"comment_submit button\" data-disable-with=\"Commenting...\" id=\"comment_submit_4cf4b8f2cc8cb40bec00001e\" name=\"commit\" type=\"submit\" value=\"Comment\" />
-        </form>
-      </li>
-    </ul>
-  </div>
-</li>"
+  def form_tag_text= new_form_tag_text
+    self[:form_tag_text] = new_form_tag_text
+  end
+  def protect_against_forgery?
+    true
   end
 end

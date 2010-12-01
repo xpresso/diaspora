@@ -22,7 +22,7 @@ describe CommentRenderer do
       time = Benchmark.realtime{
         @controller.render_to_string(@r_opts)
       }
-      (time*1000).should < 12
+      (time*1000).should < 18
     end
     it 'is correct' do
       v = @controller.render_to_string(@r_opts)

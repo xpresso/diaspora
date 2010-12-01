@@ -40,6 +40,11 @@ end
 
 ImageUploader.enable_processing = false
 
+class ActionView::Template::Error
+  def to_s
+    original_exception.to_s
+  end
+end
   
 class FakeHttpRequest
   def initialize(callback_wanted)

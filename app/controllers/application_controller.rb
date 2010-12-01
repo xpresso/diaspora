@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   before_filter :count_requests
   before_filter :set_invites
   before_filter :set_locale
+  
 
   def set_contacts_and_status
     if current_user
