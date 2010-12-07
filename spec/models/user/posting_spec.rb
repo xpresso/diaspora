@@ -82,5 +82,6 @@ describe User do
   end
 
   context 'dispatching' do
+
   end
 end
