@@ -1,0 +1,6 @@
+pl:
+  inflections:
+    masculine: "Masculine"
+    feminine: "Feminine"
+    neuter: "Neuter"
+    default: neuter

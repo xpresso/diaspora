@@ -82,7 +82,6 @@ class UsersController < ApplicationController
     @step ||= 1
 
     if @step == 4
-      @user.grammatical_gender = I18n::Backend::Genderize.guess(@profile.gender)
       @user.getting_started = false
       @user.save
     end

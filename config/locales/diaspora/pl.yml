@@ -30,7 +30,7 @@ pl:
       unknown_person: "nieznana osoba"
       youtube_title: 
         unknown: "Nieznany tytuł wideo"
-  are_you_sure: "Na pewno?"
+  are_you_sure: "feminine: \"Na pewno? feminine\", masculine: \"Na pewno? masculine\", neuter: \"Na pewno? neuter\""
   aspects: 
     add_to_aspect: 
       failure: "Nie udało się dodać kontaktu do aspektu."
