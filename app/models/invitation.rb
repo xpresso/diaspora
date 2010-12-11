@@ -17,31 +17,21 @@ class Invitation
     existing_user = User.find_by_email(opts[:email])
     if existing_user
       if opts[:from].contact_for(opts[:from].person)
-        raise "You are already connceted to this person"
+        return "You are already connceted to #{opts[:email]}"
       elsif not existing_user.invited?
         opts[:from].send_contact_request_to(existing_user.person, opts[:into])
         return
       elsif Invitation.first(:from_id => opts[:from].id, :to_id => existing_user.id)
-        raise "You already invited this person"
+        return "You already invited #{opts[:email]}"
       end
-    end
-    create_invitee(opts)
-  end
-
-  def self.new_or_existing_user_by_email(email)
-    existing_user = User.first(:email => email)
-    if existing_user
-      existing_user
     else
-      result = User.new()
-      result.email = email
-      result.valid?
-      result
+      Resque.enqueue(Jobs::InviteUser, opts[:from].id, opts[:email], opts[:into], opts[:message])
+      return nil
     end
   end
 
   def self.create_invitee(opts = {})
-    invitee = new_or_existing_user_by_email(opts[:email])
+    invitee = User.new_or_existing_user_by_email(opts[:email])
     return invitee unless opts[:email].match Devise.email_regexp
     invitee.invites = opts[:invites]
     if invitee.new_record?

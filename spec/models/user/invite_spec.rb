@@ -18,35 +18,14 @@ describe User do
     end
 
     it 'calls Invitation.invite' do
-      Invitation.should_receive(:invite)
+      Invitation.should_receive(:create_invitee)
       inviter.invite_user(@email, aspect.id)
     end
 
-    it 'has an invitation' do
-      inviter.invite_user("joe@example.com", aspect.id).invitations_to_me.count.should == 1
-    end
-
-    it 'creates it with an email' do
-      inviter.invite_user("joe@example.com", aspect.id).email.should == "joe@example.com"
-    end
-
-
-    it 'throws if you try to add someone you"re connected to' do
-      connect_users(inviter, aspect, another_user, wrong_aspect)
-      inviter.reload
-      proc{inviter.invite_user(another_user.email, aspect.id)}.should raise_error /already connected/
-    end
-
-  end
-
-  context "limit on invites" do
-
-    it 'does not invite people I already invited' do
-      inviter_with_3_invites.invite_user("email1@example.com", aspect2.id)
-      proc{inviter_with_3_invites.invite_user("email1@example.com", aspect2.id)}.should raise_error /You already invited this person/
+    it 'checks on aspect ownership' do
+      pending
     end
   end
-
 
   describe "#accept_invitation!" do
     let(:invited_user) {@invited_user_pre.accept_invitation!(:invitation_token => "abc",
@@ -57,7 +36,7 @@ describe User do
                                 :last_name  => "Smith"}} )}
 
     before do
-      @invited_user_pre = Invitation.invite(:from => inviter, :email => 'invitee@example.org', :into => aspect).reload
+      @invited_user_pre = Invitation.create_invitee(:from => inviter, :email => 'invitee@example.org', :into => aspect).reload
       @person_count = Person.count
     end
 

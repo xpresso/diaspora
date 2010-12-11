@@ -27,7 +27,6 @@ describe InvitationsController do
         true
       end
     end
-
   end
 
 
@@ -42,7 +41,7 @@ describe InvitationsController do
     end
 
     it 'should call the resque job Jobs::InviteUser'  do
-    Resque.should_receive(:enqueue)
+      Resque.should_receive(:enqueue)
      post :create,  :user => @invite
     end
  

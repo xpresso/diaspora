@@ -95,6 +95,18 @@ class User
     self.person.send(method, *args) if self.person
   end
 
+  def self.new_or_existing_user_by_email(email)
+    existing_user = User.first(:email => email)
+    if existing_user
+      existing_user
+    else
+      result = User.new
+      result.email = email
+      result.valid?
+      result
+    end
+  end
+
   ######### Aspects ######################
   def drop_aspect(aspect)
     if aspect.contacts.count == 0
@@ -320,7 +332,7 @@ class User
   def invite_user(email, aspect_id, invite_message = "")
     aspect_object = Aspect.first(:user_id => self.id, :id => aspect_id)
     if aspect_object
-      Invitation.invite(:email => email,
+      Invitation.create_invitee(:email => email,
                         :from => self,
                         :into => aspect_object,
                         :message => invite_message)

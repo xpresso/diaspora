@@ -44,7 +44,7 @@ describe Invitation do
   end
 
   describe '.new_or_existing_user_by_email' do
-    let(:inv){Invitation.new_or_existing_user_by_email(@email)}
+    let(:inv){User.new_or_existing_user_by_email(@email)}
     before do
       @users = []
       8.times do
@@ -66,46 +66,6 @@ describe Invitation do
   end
 
   describe '.invite' do
-    it 'creates an invitation' do
-      lambda {
-        Invitation.invite(:email => @email, :from => user, :into => aspect)
-      }.should change(Invitation, :count).by(1)
-    end
-
-    it 'associates the invitation with the inviter' do
-      lambda {
-        Invitation.invite(:email => @email, :from => user, :into => aspect)
-      }.should change{user.reload.invitations_from_me.count}.by(1)
-    end
-    
-    it 'associates the invitation with the invitee' do
-      new_user = Invitation.invite(:email => @email, :from => user, :into => aspect)
-      new_user.invitations_to_me.count.should == 1
-    end
-    
-    it 'creates a user' do
-      lambda {
-        Invitation.invite(:from => user, :email => @email, :into => aspect)
-      }.should change(User, :count).by(1)
-    end
-    
-    it 'returns the new user' do
-      new_user = Invitation.invite(:from => user, :email => @email, :into => aspect)
-      new_user.is_a?(User).should be_true
-      new_user.email.should == @email
-    end
-    
-    it 'adds the inviter to the invited_user' do
-      new_user = Invitation.invite(:from => user, :email => @email, :into => aspect)
-      new_user.invitations_to_me.first.from.should == user
-    end
-
-    it 'adds an optional message' do
-      message = "How've you been?"
-      new_user = Invitation.invite(:from => user, :email => @email, :into => aspect, :message => message)
-      new_user.invitations_to_me.first.message.should == message
-    end
-
     it 'sends a contact request to a user with that email into the aspect' do
       user2
       user.should_receive(:send_contact_request_to){ |a, b| 
@@ -113,30 +73,6 @@ describe Invitation do
         b.should == aspect
       }
       Invitation.invite(:from => user, :email => user2.email, :into => aspect)
-    end
-
-    it 'decrements the invite count of the from user' do
-      message = "How've you been?"
-      lambda{
-        new_user = Invitation.invite(:from => user, :email => @email, :into => aspect, :message => message)
-      }.should change(user, :invites).by(-1) 
-    end
-    
-    it "doesn't decrement counter past zero" do
-      user.invites = 0
-      user.save!
-      message = "How've you been?"
-      lambda {
-        new_user = Invitation.invite(:from => user, :email => @email, :into => aspect, :message => message)
-      }.should_not change(user, :invites)
-    end
-
-    context 'invalid email' do
-      it 'return a user with errors' do
-        new_user = Invitation.invite(:email => "fkjlsdf", :from => user, :into => aspect)
-        new_user.should have(1).errors_on(:email)
-        new_user.should_not be_persisted
-      end
     end
   end
 
@@ -148,6 +84,63 @@ describe Invitation do
           :into => aspect, 
           :message => @message}
         @invitee = Invitation.create_invitee(:email => @email)
+      end
+
+      it 'creates an invitation' do
+        lambda {
+          Invitation.create_invitee(:email => @email, :from => user, :into => aspect)
+        }.should change(Invitation, :count).by(1)
+      end
+
+      it 'associates the invitation with the inviter' do
+        lambda {
+          Invitation.create_invitee(:email => @email, :from => user, :into => aspect)
+
+        }.should change{user.reload.invitations_from_me.count}.by(1)
+      end
+      
+      it 'associates the invitation with the invitee' do
+        new_user = Invitation.create_invitee(:email => @email, :from => user, :into => aspect)
+        new_user.invitations_to_me.count.should == 1
+      end
+      
+      it 'creates a user' do
+        lambda {
+          Invitation.create_invitee(:from => user, :email => "getty@paeace.com", :into => aspect)
+        }.should change(User, :count).by(1)
+      end
+      
+      it 'returns the new user' do
+        new_user = Invitation.create_invitee(:from => user, :email => @email, :into => aspect)
+        new_user.is_a?(User).should be_true
+        new_user.email.should == @email
+      end
+      
+      it 'adds the inviter to the invited_user' do
+        new_user = Invitation.create_invitee(:from => user, :email => @email, :into => aspect)
+        new_user.invitations_to_me.first.from.should == user
+      end
+
+      it 'adds an optional message' do
+        message = "How've you been?"
+        new_user = Invitation.create_invitee(:from => user, :email => @email, :into => aspect, :message => message)
+        new_user.invitations_to_me.first.message.should == message
+      end
+
+      it 'decrements the invite count of the from user' do
+        message = "How've you been?"
+        lambda{
+          new_user = Invitation.create_invitee(:from => user, :email => @email, :into => aspect, :message => message)
+        }.should change(user, :invites).by(-1) 
+      end
+      
+      it "doesn't decrement counter past zero" do
+        user.invites = 0
+        user.save!
+        message = "How've you been?"
+        lambda {
+          new_user = Invitation.invite(:from => user, :email => @email, :into => aspect, :message => message)
+        }.should_not change(user, :invites)
       end
       it 'creates no user' do
         lambda {
@@ -230,7 +223,7 @@ describe Invitation do
 
   describe '#to_request!' do
     before do
-      @new_user = Invitation.invite(:from => user, :email => @email, :into => aspect)
+      @new_user = Invitation.create_invitee(:from => user, :email => @email, :into => aspect)
       acceptance_params = {:invitation_token => "abc",
                               :username => "user",
                               :password => "secret",

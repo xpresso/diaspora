@@ -17,12 +17,18 @@ class InvitationsController < Devise::InvitationsController
       message = params[:user].delete(:invite_messages)
       emails = params[:user][:email].split(/, */)
 
+      bad_messages = []
       good_emails, bad_emails = emails.partition{|e| e.try(:match, Devise.email_regexp)}
 
-      good_emails.each{|e| Resque.enqueue(Jobs::InviteUser, current_user.id, e, aspect, message)}
+      good_emails.each do |e| 
+        r =  Invitation.invite(:from => current_user, :into => aspect, :message => message, :email => e)
+        if r.class.name == "String"
+          bad_messages << r
+        end
+      end
 
-      if bad_emails.any?
-        flash[:error] = I18n.t('invitations.create.sent') + good_emails.join(', ') + " "+ I18n.t('invitations.create.rejected') + bad_emails.join(', ')
+      if bad_emails.any? || bad_messages.any?
+        flash[:error] = I18n.t('invitations.create.sent') + good_emails.join(', ') + " "+ I18n.t('invitations.create.rejected') + bad_emails.join(', ') + bad_messages.join(', ')
       else
         flash[:notice] = I18n.t('invitations.create.sent') + good_emails.join(', ')
       end
