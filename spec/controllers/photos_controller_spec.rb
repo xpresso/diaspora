@@ -42,6 +42,23 @@ describe PhotosController do
       post :create, @params
       user1.reload.person.profile.image_url.should_not == old_url
     end
+ end
+  describe "create performance" do
+    before do
+      file = File.open(File.join(File.dirname(__FILE__), '..', 'fixtures', 'awesome-kid.jpg'))
+      @params = {:photo => {:user_file => file.read, :aspect_ids => "all"}, :qqfile => "/tmp/qqfile.jpg" }
+    end
+    it "should happen fast" do
+      post :create, @params
+      assigns(:time_taken).should < 0.5
+    end
+    it "should process eventually" do
+     fantasy_resque do
+      post :create, @params
+     end
+     assigns(:time_taken).should > 0.5
+    end
+
   end
 
   describe '#index' do

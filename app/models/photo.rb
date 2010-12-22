@@ -41,9 +41,15 @@ class Photo < Post
     photo = super(params)
     image_file = params.delete(:user_file)
     photo.random_string = gen_random_string(10)
-
-    photo.image.store! image_file
+    photo.image_filename = image_file.path
+    photo.save
+    Resque.enqueue(Jobs::ResizePhoto, photo.id)
     photo
+  end
+
+  def post_process
+    image.store! File.open(image_filename)
+    save
   end
 
   def remote_photo
