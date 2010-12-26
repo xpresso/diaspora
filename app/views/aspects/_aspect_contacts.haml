@@ -17,14 +17,22 @@
       });
 
 #left_pane
-  .section.contact_pictures
+  %ul.aspect_contacts
     - for contact in contacts
-      = person_image_link(contact[:person])
+      %li
+        .right
+          = link_to 'X',
+            {:controller => "aspects",
+              :action => 'remove_from_aspect',
+              :aspect_id => @aspect.id,
+              :person_id => contact[:person].id},
+            :remote => true,
+            :confirm => "Remove #{contact[:person].name} from #{@aspect.name}?",
+            :class => "remove_from_aspect"
 
-    %br
-    %br
-    %br
-    .section
-      %h3= t('shared.invitations.invites')
-      = render "shared/invitations", :invites => @invites
 
+        = person_image_link(contact[:person])
+        .name
+          = link_to contact[:person].name, contact[:person]
+
+  .contact_pictures

@@ -5,20 +5,18 @@
 - content_for :page_title do
   = @aspect.name.html_safe
 
-.span-24.last
+.span-5.append-1
   %h2{:style=>"position:relative;margin-bottom:0;"}
     = @aspect
 
-  %span.aspect_contact_count{:style=>"color:#999;font-size:14px;"}
+  %h4.aspect_contact_count{:style=>"color:#999;font-weight:normal;"}
     = t('contacts', :count=>@aspect_contacts_count)
-    = link_to t('.edit_aspect'), "#", :id => "edit_aspect_trigger"
+    = link_to t('.edit_aspect'), "#edit_aspect_pane", :class => 'edit_aspect_button'
 
-.span-8.append-1
   = render 'aspects/aspect_contacts', :contacts => @aspect_contacts, :aspect => @aspect
-  = render 'aspects/edit_aspect_pane', :contacts => @all_contacts, :aspect => @aspect
 
 
-.span-15.last
+.span-18.last
   = render 'shared/publisher', :aspect => @aspect
   = render 'aspects/no_contacts_message', :aspect => @aspect, :contact_count => @aspect_contacts_count, :options => false
   = render 'aspects/no_posts_message', :post_count => @post_count, :contact_count=> @aspect_contacts_count
@@ -26,3 +24,8 @@
   %ul{:class => 'stream', :id => 'main_stream'}
     = render 'shared/stream', :posts => @post_hashes
   =will_paginate @posts
+
+
+.fancybox_content
+  #edit_aspect_pane
+    = render 'aspects/edit_aspect_pane', :contacts => @all_contacts, :aspect => @aspect

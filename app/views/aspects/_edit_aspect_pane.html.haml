@@ -5,19 +5,18 @@
 - content_for :head do
   = include_javascripts :aspects
 
-#edit_aspect_pane
-  - if @contacts.count > 0
-    %h4= t('.add_existing')
-    = render 'shared/contact_list', :aspect_id => aspect.id, :contact_hashes => contacts, :manage => defined?(manage)
+- if @contacts.count > 0
+  %h4= t('.add_existing')
+  = render 'shared/contact_list', :aspect_id => aspect.id, :contact_hashes => contacts, :manage => defined?(manage)
 
-  = render 'shared/add_contact', :aspect_id => aspect.id
+= render 'shared/add_contact', :aspect_id => aspect.id
 
-  %hr
-  = form_for aspect do |asp|
-    = asp.text_field :name, :value => aspect.name
-    = asp.submit "Rename Aspect"
+%hr
+= form_for aspect do |asp|
+  = asp.text_field :name, :value => aspect.name
+  = asp.submit "Rename Aspect"
 
-  %hr
-  .big_buttons
-    = button_to t('.remove_aspect'), aspect, :method => "delete", :confirm => t('.confirm_remove_aspect')
+%hr
+.big_buttons
+  = button_to t('.remove_aspect'), aspect, :method => "delete", :confirm => t('.confirm_remove_aspect')
 

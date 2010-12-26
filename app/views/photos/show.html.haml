@@ -5,7 +5,8 @@
 - content_for :head do
   = include_javascripts :photos
 
-.span-15.append-1.last
+
+.span-16.append-7.last
   #photo_controls
     .right
       =link_to "← #{t('previous')}", @prev_photo, :rel => 'prefetch', :id => 'photo_show_left'
@@ -17,23 +18,22 @@
     - else
       \.
 
+.span-16.append-1.last
   #photo_container
     #show_photo{:data=>{:guid=>@photo.id}}
       -if @ownership
         = image_tag 'ajax-loader.gif', :id => "photo_spinner", :class => "hidden"
-        = image_tag @photo.url(:scaled_full)
+        = link_to (image_tag @photo.url(:scaled_full)), '#'
       -else
-        = image_tag @photo.url(:scaled_full)
+        = link_to (image_tag @photo.url(:scaled_full)), '#'
 
       #caption
         = @photo.caption
 
-  %hr
-
   - if @ownership
     .photo_options{:data=>{:actor=>"#{@photo.person.owner.id}",:actor_person=>"#{@photo.person.id}",:image_url=>"#{@photo.url(:thumb_large)}"}}
       = link_to t('.make_profile_photo'), {:controller => "photos", :action => "make_profile_photo", :photo_id => @photo.id}, :remote => true, :class => 'make_profile_photo'
-      |
+      \/
       = link_to t('.edit'), '#', :id => "edit_photo_toggle"
 
     #photo_edit_options
@@ -45,8 +45,13 @@
       %p
         = button_to t('.delete_photo'), @photo, :confirm => t('are_you_sure'), :method => :delete
 
-.span-8.last
+  %h4= t('_comments')
 
+  %ul{:id => 'photo_stream', :class => 'stream show'}
+    %li.message{:data=>{:guid=>@parent.id}}
+      = render "comments/comments", :post_id => @parent.id, :comment_hashes => @comment_hashes, :always_expanded => true
+
+.span-7.last
   #original_post_info
     = render 'shared/author_info', :person => @photo.person, :post => @photo
 
@@ -57,9 +62,6 @@
       %p
         - for photo in @additional_photos
           = link_to (image_tag photo.url(:thumb_small)), object_path(photo)
-
-  %h4= t('_comments')
-
-  %ul{:id => 'photo_stream', :class => 'stream show'}
-    %li.message{:data=>{:guid=>@parent.id}}
-      = render "comments/comments", :post_id => @parent.id, :comment_hashes => @comment_hashes, :always_expanded => true
+    %hr
+    .time
+      = how_long_ago(@photo)

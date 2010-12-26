@@ -278,7 +278,7 @@ header
 
   .from
     :display inline-block
-    :padding 10px
+    :padding 5px
       :top 0
 
   &.profile
@@ -293,6 +293,8 @@ header
     a
       :margin
         :right 2em
+      :font
+        :weight normal
 
 
 
@@ -314,7 +316,7 @@ li.message
     :margin
       :top 0
     :padding
-      :left 60px
+      :left 62px
 
     :color #444
     :font
@@ -664,18 +666,15 @@ li.message:hover
     &:first-child
       :margin-right 1em
 
-#photo_container
-  :text
-    :align center
-
 #show_photo
   :position relative
   :display inline-block
   :background
     :color #fff
-
   img
     :max-width 100%
+    :margin
+      :bottom 1em
 
   #photo_spinner
     :z-index 1
@@ -684,12 +683,7 @@ li.message:hover
     :width 100px
 
   #caption
-    :min-height 20px
     :padding 0 10px
-    :font
-      :size 16px
-    :font
-      :family 'MARKER FELT', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif
     :color #333
 
 #debug_info
@@ -1201,14 +1195,67 @@ ul#settings_nav
   :background
     :color transparent
 
+.contact_pictures,
+.aspect_contacts
+  img
+    :margin-right 3px
+    :width 24px
+    :height 24px
+
 .contact_pictures
   :margin
     :top 12px
   :line-height 1em
-  img
-    :margin-right -1px
-    :width 30px
-    :height 30px
+
+ul.aspect_contacts
+  :padding 0
+  :margin 0
+
+  li
+    :padding 0
+      :top 0.4em
+    :position relative
+    :border
+      :bottom 1px solid #eee
+
+    .right
+      :top 7px
+      :display none
+
+    &:hover
+      .right
+        :display inline
+
+  .name
+    :display inline-block
+    :position relative
+    :top -7px
+
+    :max-width 100%
+
+    :overflow hidden
+    :white-space nowrap
+    :text-overflow ellipsis
+
+  .remove_from_aspect
+    :display inline-block
+    :background
+      :color #eee
+    :color #ccc
+    :font
+      :size 9px
+    :border-radius 15px
+    :width 14px
+    :height 14px
+    :text
+      :indent 4px
+    :line
+      :height 14px
+
+    &:hover
+      :background
+        :color #ccc
+      :color #666
 
 .contact_pictures.horizontal
   img
@@ -1222,8 +1269,7 @@ ul#settings_nav
   :padding 0
 
 
-#left_pane.everyone,
-#edit_aspect_pane
+#left_pane.everyone
   :background
     :color rgb(250,250,250)
   :border 1px solid #ddd
@@ -1253,16 +1299,6 @@ ul#settings_nav
     :margin-right -1px
     :width 30px
     :height 30px
-
-#edit_aspect_pane
-  :margin
-    :top 12px
-  :background -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FBFBFB), to(#F5F5F5))
-  :background -moz-linear-gradient(top, #FBFBFB, #F5F5F5)
-
-  :border 1px solid #eee
-    :top 1px solid #fff
-    :bottom 1px solid #fff
 
 #left_pane.everyone
   .aspect_listings
@@ -1382,7 +1418,7 @@ input[type="search"]
 .photo_options
   :color #ddd
   :text
-    :align center
+    :align right
 
 ul.aspects
   :margin 0
@@ -1947,13 +1983,6 @@ h3,h4
   :padding
     :bottom 5px
 
-#edit_aspect_pane
-  :-webkit-box-shadow 0 4px 8px #333
-  :-moz-box-shadow 0 4px 8px #333
-  :box-shadow 0 4px 8px #333
-
-  :display none
-
 .big_buttons
   input
     :width 100%
@@ -1970,10 +1999,11 @@ h3,h4
     a
       :font
         :size 12px
-  img
-    :-webkit-box-shadow 0 1px 2px #666
-    :-moz-box-shadow 0 1px 2px #666
-    :box-shadow 0 1px 2px #666
+  .time
+    :font
+      :weight bold
+      :size smaller
+    :color #999
 
 .what_is_this
   :position relative
@@ -1982,7 +2012,7 @@ h3,h4
   &:hover
     :opacity 0.5
 
-#edit_aspect_trigger
+.edit_aspect_button
   :font
     :size 12px
 

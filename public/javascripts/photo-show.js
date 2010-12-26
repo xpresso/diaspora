@@ -60,15 +60,20 @@ $(document).ready( function(){
 
   // right/left hotkeys
   $(document).keyup(function(e){
-    //left
     if(e.keyCode == 37) {
       document.location = $("#photo_show_left").attr('href');
-
-    //right
     } else if(e.keyCode == 39) {
-      document.location = $("#photo_show_right").attr('href');
-
+      nextPhoto();
     }
   });
+
+  // photo click
+  $("a", "#show_photo").click(function(){
+    nextPhoto()
+  });
+
+  function nextPhoto(){
+    document.location = $("#photo_show_right").attr('href');
+  }
 
 });
