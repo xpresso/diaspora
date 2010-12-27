@@ -9,6 +9,13 @@
   %h2
     = current_user.name
 
+  %br
+  %a.button{:href => '#'}
+    = image_tag 'icons/doc_edit.png', :height=>14, :width=>14
+    Share with all aspects
+  %br
+  %br
+
   = link_to "view profile", current_user.person
   %br
   = link_to "manage aspects", aspects_manage_path

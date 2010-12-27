@@ -1,18 +1,17 @@
 #author_info
-  = person_image_link(person)
-  .from
-    %h4
-      = person.name
+  /= person_image_link(person)
+  %h4
+    = person.name
 
-      - if post.public?
-        %span.arrow ➔
-        %span.aspect_badge.public
-          =t('the_world')
+    - if post.public?
+      %span.arrow ➔
+      %span.aspect_badge.public
+        =t('the_world')
 
-      - elsif current_user.owns?(post)
-        %span.arrow ➔
-        =aspect_badge(aspects_with_post(post.aspects, post))
+    - elsif current_user.owns?(post)
+      %span.arrow ➔
+      =aspect_badge(aspects_with_post(post.aspects, post))
 
-    #person_nav_links
-      = link_to t('layouts.header.view_profile'), person_path(person)
-      = link_to t('_photos'), person_photos_path(person)
+  #person_nav_links
+    = link_to t('layouts.header.view_profile'), person_path(person)
+    = link_to t('_photos'), person_photos_path(person)

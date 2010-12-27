@@ -295,7 +295,8 @@ header
     :font
       :weight bold
 
-#main_stream
+#main_stream,
+#content
   :z-index 2
   :padding
     :left 200px
@@ -548,7 +549,8 @@ ul.show_comments
   :padding 0
   :background
     :color #F0F4F5
-    :color #ccc
+    :color #F6F5FE
+    //:color #ccc
 
   textarea
     :width 100%
@@ -699,8 +701,8 @@ li.message:hover
 #show_photo
   :position relative
   :display inline-block
-  :background
-    :color #fff
+  :padding
+    :right 20px
   img
     :max-width 100%
     :margin
@@ -778,8 +780,9 @@ label
     :width 100%
 
 #publisher
-  :width 100%
   :color #999
+  :height 200px
+  :width 700px
   :position relative
   :margin
     :bottom 10px
@@ -811,10 +814,10 @@ label
 
   input[type='text'],
   textarea
-    :width 435px
+    :width 535px
     :margin 0
   textarea
-    :height 42px
+    :height 102px
   label
     :font
       :size 14px

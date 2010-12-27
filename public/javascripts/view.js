@@ -53,7 +53,10 @@ var View = {
       });
 
     /* Masonry */
-    $("#main_stream").masonry({columnWidth:240});
+    $("#main_stream").masonry({
+      columnWidth:240,
+      animate:true
+    });
 
 
     /* Autoexpand textareas */

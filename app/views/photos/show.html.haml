@@ -6,6 +6,21 @@
   = include_javascripts :photos
 
 
+#left_nav
+  #original_post_info
+    = render 'shared/author_info', :person => @photo.person, :post => @photo
+
+    - if @photo.status_message_id
+      %p
+        = markdownify(@photo.status_message.message)
+
+      %p
+        - for photo in @additional_photos
+          = link_to (image_tag photo.url(:thumb_small)), object_path(photo)
+    %hr
+    .time
+      = how_long_ago(@photo)
+
 .span-16.append-7.last
   #photo_controls
     .right
@@ -18,7 +33,7 @@
     - else
       \.
 
-.span-16.append-1.last
+#content
   #photo_container
     #show_photo{:data=>{:guid=>@photo.id}}
       -if @ownership
@@ -51,17 +66,3 @@
     %li.message{:data=>{:guid=>@parent.id}}
       = render "comments/comments", :post_id => @parent.id, :comment_hashes => @comment_hashes, :always_expanded => true
 
-.span-7.last
-  #original_post_info
-    = render 'shared/author_info', :person => @photo.person, :post => @photo
-
-    - if @photo.status_message_id
-      %p
-        = markdownify(@photo.status_message.message)
-
-      %p
-        - for photo in @additional_photos
-          = link_to (image_tag photo.url(:thumb_small)), object_path(photo)
-    %hr
-    .time
-      = how_long_ago(@photo)
