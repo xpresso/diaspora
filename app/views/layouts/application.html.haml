@@ -25,6 +25,7 @@
 
 
     = javascript_include_tag "//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"
+    = javascript_include_tag "vendor/jquery.masonry.min.js"
 
     :javascript
       !window.jQuery && document.write(unescape('%3Cscript src="/javascripts/vendor/jquery144.min.js"%3E%3C/script%3E'))
@@ -78,21 +79,16 @@
     %header{:class=>('landing' unless current_user)}
       = render 'layouts/header'
 
-    .container
-      .span-24.last
-        = yield
-
-    .clearfix
+    = yield
 
     %footer
-      .container
-        = image_tag 'powered_by_diaspora.png', :height => "11px", :width => "145px"
-        %ul#footer_nav
-          %li= link_to '@joindiaspora', "http://twitter.com/joindiaspora"
-          %li= link_to 'github', "https://github.com/diaspora/diaspora"
-          %li= link_to t('layouts.header.blog'), "http://blog.joindiaspora.com"
-          %li= link_to t('layouts.header.code'), "#{root_url}source.tar.gz"
-          %li= link_to t('.whats_new'), 'https://github.com/diaspora/diaspora/wiki/Changelog'
+      = image_tag 'powered_by_diaspora.png', :height => "11px", :width => "145px"
+      %ul#footer_nav
+        %li= link_to '@joindiaspora', "http://twitter.com/joindiaspora"
+        %li= link_to 'github', "https://github.com/diaspora/diaspora"
+        %li= link_to t('layouts.header.blog'), "http://blog.joindiaspora.com"
+        %li= link_to t('layouts.header.code'), "#{root_url}source.tar.gz"
+        %li= link_to t('.whats_new'), 'https://github.com/diaspora/diaspora/wiki/Changelog'
 
     -if !@landing_page && request.url.match(/joindiaspora.com/)
       :javascript

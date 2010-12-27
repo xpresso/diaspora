@@ -2,56 +2,54 @@
 -#   licensed under the Affero General Public License version 3 or later.  See
 -#   the COPYRIGHT file.
 
-.container#head{:style => "position:relative;"}
+- if current_user
+  = link_to image_tag('logo_small.png', :height => "16px", :width => "161px", :class => "diaspora_header_logo"), root_path
+- else
+  = link_to image_tag('logo_large.png', :height => "32px", :width => "321px", :class => "diaspora_header_logo"), root_path
 
-  - if current_user
-    = link_to image_tag('logo_small.png', :height => "16px", :width => "161px", :class => "diaspora_header_logo"), root_path
-  - else
-    = link_to image_tag('logo_large.png', :height => "32px", :width => "321px", :class => "diaspora_header_logo"), root_path
+- if !current_user
+  .right
+    %ul#landing_nav
+      %li= link_to '@joindiaspora', "http://twitter.com/joindiaspora"
+      %li= link_to 'github', "https://github.com/diaspora/diaspora"
+      %li= link_to t('.blog'), 'http://blog.joindiaspora.com/'
+      %li= link_to t('.login'), new_user_session_path, :class => 'login'
 
-  - if !current_user
-    .right
-      %ul#landing_nav
-        %li= link_to '@joindiaspora', "http://twitter.com/joindiaspora"
-        %li= link_to 'github', "https://github.com/diaspora/diaspora"
-        %li= link_to t('.blog'), 'http://blog.joindiaspora.com/'
-        %li= link_to t('.login'), new_user_session_path, :class => 'login'
+- elsif (current_user || !@landing_page)
+  /#global_search
+  /= form_tag(people_path, :method => 'get', :id => "global_search_form") do
+  /= text_field_tag 'q', nil, :placeholder => t('search'), :type => 'search', :results => 5
 
-  - elsif (current_user || !@landing_page)
-    #global_search
-      = form_tag(people_path, :method => 'get', :id => "global_search_form") do
-        = text_field_tag 'q', nil, :placeholder => t('search'), :type => 'search', :results => 5
+  /#notification_badge
+  /= link_to "", notifications_path, :title => new_notification_text(@notification_count)
+  /= image_tag 'icons/mail_grey.png'
+  /#notification_badge_number{:class => ("hidden" if @notification_count == 0)}
+  /= @notification_count
 
-    #notification_badge
-      = link_to "", notifications_path, :title => new_notification_text(@notification_count)
-      = image_tag 'icons/mail_grey.png'
-      #notification_badge_number{:class => ("hidden" if @notification_count == 0)}
-        = @notification_count
+  /%ul#user_menu
+  /.right
+  /▼
+  /.avatar
+  /= owner_image_tag(:thumb_small)
+  /= link_to current_user.name, '#'
+  /%li= link_to t('.view_profile'), current_user.person
+  /%li= link_to t('.edit_profile'), edit_person_path(current_user.person)
+  /%li= link_to t('.account_settings'), edit_user_path(current_user)
+  /%li= link_to t('.logout'), destroy_user_session_path
 
-    %ul#user_menu
-      .right
-        ▼
-      .avatar
-        = owner_image_tag(:thumb_small)
-      = link_to current_user.name, '#'
-      %li= link_to t('.view_profile'), current_user.person
-      %li= link_to t('.edit_profile'), edit_person_path(current_user.person)
-      %li= link_to t('.account_settings'), edit_user_path(current_user)
-      %li= link_to t('.logout'), destroy_user_session_path
+  -unless @landing_page
+    #aspect_nav
+      %ul
+        %li{:class => ("selected" if @aspect == :all)}
+          = link_to t('_home'), root_path
 
-    -unless @landing_page
-      #aspect_nav
-        %ul
-          %li{:class => ("selected" if @aspect == :all)}
-            = link_to t('_home'), root_path
+        - for aspect in @aspects
+          %li{:class => ("selected" if current_aspect?(aspect))}
+            = link_for_aspect aspect
+        %li
+          = link_to '+', '#add_aspect_pane', :class => "add_aspect_button", :title => t('aspects.manage.add_a_new_aspect')
 
-          - for aspect in @aspects
-            %li{:class => ("selected" if current_aspect?(aspect))}
-              = link_for_aspect aspect
-          %li
-            = link_to '+', '#add_aspect_pane', :class => "add_aspect_button", :title => t('aspects.manage.add_a_new_aspect')
-
-        .fancybox_content
-          #add_aspect_pane
-            = render "aspects/new_aspect"
+      .fancybox_content
+        #add_aspect_pane
+          = render "aspects/new_aspect"
 

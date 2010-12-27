@@ -52,6 +52,10 @@ var View = {
          'hideOnOverlayClick' : false
       });
 
+    /* Masonry */
+    $("#main_stream").masonry({columnWidth:240});
+
+
     /* Autoexpand textareas */
     $('textarea')
       .autoResize({

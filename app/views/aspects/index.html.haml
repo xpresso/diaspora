@@ -2,23 +2,35 @@
 -#   licensed under the Affero General Public License version 3 or later.  See
 -#   the COPYRIGHT file.
 
-.span-24.last
-  %h2{:style => "position:relative;"}
+/= render 'aspects/no_contacts_message', :aspect => @aspect, :contact_count => @contacts.count
+/= render 'aspects/no_posts_message', :post_count => @post_hashes.length, :contact_count => @contacts.count
+
+#left_nav
+  %h2
     = current_user.name
-    .right{:style=>"top:0"}
-      %span.description
-        = link_to current_user.diaspora_handle, person_path(current_user.person)
-        = info_text(t('.handle_explanation'))
 
-.span-15.append-1
-  = render 'shared/publisher', :aspect => @aspect
-  = render 'aspects/no_contacts_message', :aspect => @aspect, :contact_count => @contacts.count
-  = render 'aspects/no_posts_message', :post_count => @post_hashes.length, :contact_count => @contacts.count
+  = link_to "view profile", current_user.person
+  %br
+  = link_to "manage aspects", aspects_manage_path
+  %br
+  = link_to "edit settings", edit_person_path(current_user.person)
+  %br
+  %br
 
-  %ul{:class => 'stream', :id => 'main_stream'}
-    = render 'shared/stream', :posts => @post_hashes
+  %h5
+    .right
+      = @contacts.count
+    Contacts
+
+  .contact_pictures
+    - for contact in @contacts
+      = person_image_tag contact.person
+
+#bottom_left
+  = link_to "TOP ↑", "#"
+
+#main_stream.stream
+  /= render 'shared/publisher', :aspect => @aspect
+  = render 'shared/stream', :posts => @post_hashes
   = will_paginate @posts
-
-.span-8.last
-  = render 'aspects/all_aspects_contacts'
 

@@ -5,20 +5,13 @@
 - content_for :page_title do
   = @person.name
 
-.span-24.last
-  #author_info
-    .from{:style=>"padding-left:0;display:block;"}
-      %h2{:style=>"display:block;"}
-        = @person.name
-        .right{:style => "top:0;"}
-          %span.description
-            = @person.diaspora_handle
+#left_nav
+  %h2
+    = @person.name
+  #person_nav_links
+    = link_to t('layouts.header.view_profile'), person_path(@person)
+    = link_to t('_photos'), person_photos_path(@person)
 
-      #person_nav_links
-        = link_to t('layouts.header.view_profile'), person_path(@person)
-        = link_to t('_photos'), person_photos_path(@person)
-
-.span-8.append-1.last
   = render :partial => 'people/profile_sidebar', :locals => {:person => @person, :contact => @contact }
 
   - if @contact && @similar_people.count > 0
@@ -30,7 +23,6 @@
         - for person in @similar_people
           = person_image_link person
 
-.span-15.last
   - unless @contact || current_user.person == @person
     - if @incoming_request
       .floating
@@ -40,24 +32,18 @@
           = link_to t('.return_to_aspects'), aspects_manage_path
           = t('.to_accept_or_ignore')
 
-  - if @posts.count > 0
+- if @posts.count > 0
+  #main_stream
+    .profile_photo
+      = person_image_link(@person, :size => :thumb_large, :to => :photos)
     -if @post_type == :photos
-      %h4
-        = t('_photos')
       = render 'photos/index', :photos => @posts
     - else
-      %h4
-        - if @contact
-          = t('.recent_posts')
-        - else
-          = t('.recent_public_posts')
+      = render 'shared/stream', :posts => @post_hashes
+  = will_paginate @posts
 
-      %ul{:class => 'stream', :id => 'main_stream'}
-        = render 'shared/stream', :posts => @post_hashes
-    = will_paginate @posts
-
-  - else
-    %ul#stream
-      %li
-        %h3= t('.no_posts')
+- else
+  %ul#stream
+    %li
+      %h3= t('.no_posts')
 

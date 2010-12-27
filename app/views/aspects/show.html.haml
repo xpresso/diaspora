@@ -5,8 +5,8 @@
 - content_for :page_title do
   = @aspect.name.html_safe
 
-.span-5.append-1
-  %h2{:style=>"position:relative;margin-bottom:0;"}
+#left_nav
+  %h2
     = @aspect
 
   %h4.aspect_contact_count{:style=>"color:#999;font-weight:normal;"}
@@ -15,16 +15,13 @@
 
   = render 'aspects/aspect_contacts', :contacts => @aspect_contacts, :aspect => @aspect
 
+/= render 'shared/publisher', :aspect => @aspect
+/= render 'aspects/no_contacts_message', :aspect => @aspect, :contact_count => @aspect_contacts_count, :options => false
+/= render 'aspects/no_posts_message', :post_count => @post_count, :contact_count=> @aspect_contacts_count
 
-.span-18.last
-  = render 'shared/publisher', :aspect => @aspect
-  = render 'aspects/no_contacts_message', :aspect => @aspect, :contact_count => @aspect_contacts_count, :options => false
-  = render 'aspects/no_posts_message', :post_count => @post_count, :contact_count=> @aspect_contacts_count
-
-  %ul{:class => 'stream', :id => 'main_stream'}
-    = render 'shared/stream', :posts => @post_hashes
+#main_stream
+  = render 'shared/stream', :posts => @post_hashes
   =will_paginate @posts
-
 
 .fancybox_content
   #edit_aspect_pane

@@ -16,7 +16,6 @@
       });
     });
 
-#thumbnails.span-15.last
-  - for photo in photos
-    = link_to (image_tag photo.url(:thumb_medium), "data-message-id" => photo.status_message_id ), photo_path(photo)
+- for photo in photos
+  = link_to (image_tag photo.url(:thumb_medium), :height=>100, :width=>100, "data-message-id" => photo.status_message_id ), photo_path(photo)
 
