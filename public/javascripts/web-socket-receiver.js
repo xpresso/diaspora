@@ -32,6 +32,7 @@ var WebSocketReceiver = {
         }else{
           WebSocketReceiver.processPost(obj['class'], obj['post_id'], obj['html'], obj['aspect_ids'])
         }
+        $("#main_stream").masonry();
       }
   },
 

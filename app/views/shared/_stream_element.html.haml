@@ -16,4 +16,4 @@
   .info
     = link_to t('comments.new_comment.comment').downcase, '#', :class => 'focus_comment_textarea'
 
-  /= render "comments/comments", :post_id => post.id, :comment_hashes => comments, :condensed => true, :commenting_disabled => defined?(@commenting_disabled)
+  = render "comments/comments", :post_id => post.id, :comment_hashes => comments, :condensed => true, :commenting_disabled => defined?(@commenting_disabled)

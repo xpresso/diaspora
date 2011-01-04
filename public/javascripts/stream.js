@@ -141,10 +141,9 @@ var Stream = {
     var $this = $(this),
       text = $this.html(),
       showUl = $(this).closest('li'),
-      commentBlock = $this.closest("li.message").find("ul.comments", ".content"),
-      commentBlockMore = $this.closest("li.message").find(".older_comments", ".content"),
+      commentBlock = $this.closest(".stream_element").find("ul.comments", ".content"),
+      commentBlockMore = $this.closest(".stream_element").find(".older_comments", ".content"),
       show = (text.indexOf("show") != -1);
-
     if( commentBlockMore.hasClass("inactive") ) {
       commentBlockMore.fadeIn(150, function(){
         commentBlockMore.removeClass("inactive");
@@ -161,11 +160,12 @@ var Stream = {
     }
 
     $this.html(text.replace((show) ? "show" : "hide", (show) ? "hide" : "show"));
+    $("#main_stream").masonry();
   },
 
   focusNewComment: function(toggle, evt) {
     evt.preventDefault();
-    var commentBlock = toggle.closest("li.message").find("ul.comments", ".content");
+    var commentBlock = toggle.closest(".stream_element").find("ul.comments", ".content");
 
     if(commentBlock.hasClass('hidden')) {
       commentBlock.removeClass('hidden');
@@ -177,6 +177,7 @@ var Stream = {
         commentBlock.find('textarea').focus();
       }
     }
+    $("#main_stream").masonry();
   }
 };
 
