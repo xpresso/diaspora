@@ -80,7 +80,9 @@ class StatusMessagesController < ApplicationController
     end
 
     @object_aspect_ids = @status_message.aspects.map{|a| a.id}
-
+    if note = Notification.where(:target_id => params[:id], :user_id => current_user.id).first
+      note.update_attributes(:unread => false)
+    end
     respond_with @status_message
   end
 end
