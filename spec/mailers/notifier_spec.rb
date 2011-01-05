@@ -20,7 +20,7 @@ describe Notifier do
       mail = mails.first 
       mail.to.should == [user.email]
       mail.body.encoded.should match /Welcome to bureaucracy!/
-      mail.body.encoded.should match /#{user.username}/
+        mail.body.encoded.should match /#{user.username}/
     end
     it 'mails a bunch of users' do
       users = []
@@ -32,7 +32,7 @@ describe Notifier do
       mails.each{|mail|
         this_user = users.detect{|u| mail.to == [u.email]}
         mail.body.encoded.should match /Welcome to bureaucracy!/
-        mail.body.encoded.should match /#{this_user.username}/
+          mail.body.encoded.should match /#{this_user.username}/
       }
     end
   end
@@ -42,7 +42,7 @@ describe Notifier do
       mail = Notifier.single_admin("Welcome to bureaucracy!", user)
       mail.to.should == [user.email]
       mail.body.encoded.should match /Welcome to bureaucracy!/
-      mail.body.encoded.should match /#{user.username}/
+        mail.body.encoded.should match /#{user.username}/
     end
   end
 
@@ -125,8 +125,6 @@ describe Notifier do
       it 'has the post link in the body' do
         comment_mail.body.encoded.include?("#{comment.post.id.to_s}").should be true
       end
-
     end
-
   end
 end

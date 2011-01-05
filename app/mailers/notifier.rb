@@ -74,6 +74,8 @@ class Notifier < ActionMailer::Base
           :subject => I18n.t('notifier.also_commented.subject', :name => @sender.name, :post_author => @post_author_name ), :host => AppConfig[:pod_uri].host)
   end
 
+
+
   private
   def log_mail recipient_id, sender_id, type
     log_string = "event=mail mail_type=#{type} db_name=#{MongoMapper.database.name} recipient_id=#{recipient_id} sender_id=#{sender_id}"

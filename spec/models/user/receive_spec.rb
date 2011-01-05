@@ -168,24 +168,24 @@ describe User do
         user.person; else; remote_person.save; remote_person; end }
 
 
-      user2.reload.raw_visible_posts.size.should == 1
-      post_in_db = user2.raw_visible_posts.first
-      post_in_db.comments.should == []
-      user2.receive(@xml, user.person)
-      post_in_db.reload
+        user2.reload.raw_visible_posts.size.should == 1
+        post_in_db = user2.raw_visible_posts.first
+        post_in_db.comments.should == []
+        user2.receive(@xml, user.person)
+        post_in_db.reload
 
-      post_in_db.comments.include?(@comment).should be true
-      post_in_db.comments.first.person.should == remote_person
-    end
+        post_in_db.comments.include?(@comment).should be true
+        post_in_db.comments.first.person.should == remote_person
   end
+end
 
-  describe 'salmon' do
-    let(:post){user.post :status_message, :message => "hello", :to => aspect.id}
-    let(:salmon){user.salmon( post )}
+describe 'salmon' do
+  let(:post){user.post :status_message, :message => "hello", :to => aspect.id}
+  let(:salmon){user.salmon( post )}
 
-    it 'should receive a salmon for a post' do
-      user2.receive_salmon( salmon.xml_for(user2.person) )
-      user2.visible_post_ids.include?(post.id).should be true
-    end
+  it 'should receive a salmon for a post' do
+    user2.receive_salmon( salmon.xml_for(user2.person) )
+    user2.visible_post_ids.include?(post.id).should be true
   end
+end
 end
