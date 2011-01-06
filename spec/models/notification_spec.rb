@@ -87,13 +87,35 @@ describe Notification do
       @aspect2 = @user2.aspects.create(:name => "winners")
       connect_users(@user, @aspect, @user2, @aspect2)
       @user3 = make_user
-      @aspect3 = @user3.aspects.create(:name => "winners")
+      @aspect3 = @user.aspects.create(:name => "winners")
       connect_users(@user, @aspect, @user3, @aspect3)
       sm = @user.post(:status_message, :message => "comment!", :to => :all)
       @user.receive_object(@user2.reload.comment("hey", :on => sm), @user2.person)
       @user.receive_object(@user3.reload.comment("way", :on => sm), @user3.person)
       Notification.where(:user_id => @user.id,:target_id => sm.id).first.people.count.should == 2
     end
+
+    context 'emails the user' do
+      before do
+        @request = Request.instantiate(:from => @user.person, :to => @user2.person, :into => @aspect)
+        @opts = {:target_id => @request.id,
+          :kind => @request.notification_type(@user, @person),
+          :person_id => @person.id,
+          :user_id => @user.id}
+
+        @n = Notification.make_notification(@user, @request, @person, @request.notification_type(@user, @user2.person))
+        Notification.stub!(:make_notification).and_return @n
+      end
+      it 'email with notifications enabled' do
+        @n.should_receive(:email_the_user).once
+        Notification.notify(@user, @request, @person)
+      end
+
+      it 'does not email with emails disabled' do
+        @user.disable_mail = true
+        @n.should_not_receive(:email_the_user)
+        Notification.notify(@user, @request, @person)
+      end
+    end
   end
 end
-
