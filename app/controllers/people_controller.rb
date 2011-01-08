@@ -42,7 +42,7 @@ class PeopleController < ApplicationController
   end
 
   def show
-    @person = Person.where(:id => params[:id]).first
+    @person = Person.from_param(params[:id]).first
     @post_type = :all
 
     if @person

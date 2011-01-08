@@ -10,7 +10,7 @@ class PhotosController < ApplicationController
 
   def index
     @post_type = :photos
-    @person = Person.find_by_id(params[:person_id])
+    @person = Person.from_param(params[:person_id]).first
 
     if @person
       @incoming_request = Request.where(:recipient_id => current_user.person.id, :sender_id => @person.id).first

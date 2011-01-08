@@ -37,6 +37,14 @@ class Person < ActiveRecord::Base
 
   scope :searchable, joins(:profile).where(:profiles => {:searchable => true})
 
+  def self.from_param(string)
+    Person.where(:diaspora_handle => string.gsub("(at)","@").gsub("(dot)","."))
+  end
+  
+  def to_param
+    diaspora_handle.gsub(/\@/,"(at)").gsub(/\./,"(dot)")
+  end
+
   def self.search(query)
     return [] if query.to_s.empty?
 

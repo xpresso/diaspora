@@ -128,9 +128,7 @@ module ApplicationHelper
   end
 
   def person_link(person)
-    "<a href='/people/#{person.id}'>
-  #{h(person.name)}
-</a>".html_safe
+    link_to person.name, person_path(person)
   end
 
   def image_or_default(person, size=:thumb_large)
@@ -149,9 +147,7 @@ module ApplicationHelper
     if opts[:to] == :photos
       link_to person_image_tag(person, opts[:size]), person_photos_path(person)
     else
-      "<a href='/people/#{person.id}'>
-  #{person_image_tag(person)}
-</a>".html_safe
+      link_to person_image_tag(person), person_path(person)
     end
   end
 
