@@ -42,8 +42,20 @@ class Person < ActiveRecord::Base
   end
   
   def to_param
-    diaspora_handle.gsub(/\@/,"(at)").gsub(/\./,"(dot)")
+    split = diaspora_handle.split("@")
+    username = split[0]
+    pod = split[1]
+    {:pod => pod, :username=> username}
   end
+  
+  def pod
+    diaspora_handle.split("@")[1]
+  end
+
+  def username
+    diaspora_handle.split("@")[0]
+  end
+
 
   def self.search(query)
     return [] if query.to_s.empty?

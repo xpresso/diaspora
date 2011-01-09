@@ -42,7 +42,7 @@ class PeopleController < ApplicationController
   end
 
   def show
-    @person = Person.from_param(params[:id]).first
+    @person = Person.find_by_diaspora_handle(params[:username]+'@'+params[:pod])
     @post_type = :all
 
     if @person

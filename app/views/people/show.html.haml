@@ -15,8 +15,8 @@
             = @person.diaspora_handle
 
       #person_nav_links
-        = link_to t('layouts.header.view_profile'), person_path(@person)
-        = link_to t('_photos'), person_photos_path(@person)
+        = link_to t('layouts.header.view_profile'), person_path(person_params(@person))
+        = link_to t('_photos'), person_photos_path(person_params(@person))
 
 .span-8.append-1.last
   = render :partial => 'people/profile_sidebar', :locals => {:person => @person, :contact => @contact }

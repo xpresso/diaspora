@@ -10,7 +10,7 @@ class PhotosController < ApplicationController
 
   def index
     @post_type = :photos
-    @person = Person.from_param(params[:person_id]).first
+    @person = Person.find_by_diaspora_handle("#{params[:username]}@#{params[:pod]}")
 
     if @person
       @incoming_request = Request.where(:recipient_id => current_user.person.id, :sender_id => @person.id).first

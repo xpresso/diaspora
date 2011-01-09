@@ -7,16 +7,30 @@ Diaspora::Application.routes.draw do
   resources :comments,        :only => [:create]
   resources :requests,        :only => [:destroy, :create]
   resources :services
-
   resources :notifications
   resources :posts,           :only => [:show], :path => '/p/'
 
 
 
   match '/people/share_with' => 'people#share_with', :as => 'share_with'
-  resources :people do
-    resources :status_messages
-    resources :photos
+# resources :people do
+    #member do
+
+    #end
+    #resources :status_messages
+    #resources :photos
+  #end
+
+  match "/people" =>"people#index", :as => 'people', :via => :get                                
+  match "/people/:pod/:username/edit" => "people#edit", :as => 'edit_person', :via => :get, :constraints => {:pod => /[A-Za-z0-9_]+\.[A-Za-z0-9_]+/}
+  match '/people/:pod/:username' => 'people#show', :as => 'person', :via => :get, :constraints => {:pod => /[A-Za-z0-9_]+\.[A-Za-z0-9_]+/}
+  match '/people/:pod/:username' => 'people#update', :via => :put, :constraints => {:pod => /[A-Za-z0-9_]+\.[A-Za-z0-9_]+/}
+  match '/people/:pod/:username' => 'people#destroy', :via => :delete, :constraints => {:pod => /[A-Za-z0-9_]+\.[A-Za-z0-9_]+/}
+ 
+
+  scope 'people' do
+    match ':pod/:username/status_messages(/:id)' => 'status_messages#index', :as => 'person_status_messages'
+    match ':pod/:username/photos(/:id)' => 'photos#index', :as => 'person_photos', :constraints => {:pod => /[A-Za-z0-9_]+\.[A-Za-z0-9_]+/}
   end
 
   match '/people/by_handle' => 'people#retrieve_remote', :as => 'person_by_handle'

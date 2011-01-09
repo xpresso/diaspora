@@ -128,7 +128,10 @@ module ApplicationHelper
   end
 
   def person_link(person)
-    link_to person.name, person_path(person)
+#    "<a href='/people/#{person.id}'>
+  ##{h(person.name)}
+#</a>".html_safe
+    link_to person.name, person_path(person_params(person))
   end
 
   def image_or_default(person, size=:thumb_large)
@@ -145,9 +148,12 @@ module ApplicationHelper
   def person_image_link(person, opts = {})
     return "" if person.nil?
     if opts[:to] == :photos
-      link_to person_image_tag(person, opts[:size]), person_photos_path(person)
+      link_to person_image_tag(person, opts[:size]), person_photos_path(person_params(person))
     else
-      link_to person_image_tag(person), person_path(person)
+#      "<a href='/people/#{person.id}'>
+   ##{person_image_tag(person)} 	
+#</a>".html_safe
+      link_to person_image_tag(person), person_path(person_params(person))
     end
   end
 
@@ -270,5 +276,12 @@ module ApplicationHelper
 
   def info_text(text)
     image_tag 'icons/monotone_question.png', :class => 'what_is_this', :title => text
+  end
+
+  def person_params(person)
+    split = person.diaspora_handle.split("@")
+    username = split[0]
+    pod = split[1]
+    {:pod => pod, :username=> username}
   end
 end
