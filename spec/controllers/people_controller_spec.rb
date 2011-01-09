@@ -3,6 +3,7 @@
 #   the COPYRIGHT file.
 
 require 'spec_helper'
+include ApplicationHelper
 
 describe PeopleController do
   render_views
@@ -166,6 +167,10 @@ describe PeopleController do
     it "does not redirect if there are no matches" do
       get :index, :q => "Korthsauce"
       response.should_not be_redirect
+    end
+
+    it 'route does not contain a the id' do
+      person_path(person_params(user.person)).include?(user.person.id).should be false
     end
   end
 
