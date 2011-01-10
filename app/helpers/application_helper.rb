@@ -80,7 +80,11 @@ module ApplicationHelper
   def object_path(object, opts = {})
     return "" if object.nil?
     object = object.person if object.is_a? User
-    eval("#{object.class.name.underscore}_path(object, opts)")
+    unless object.is_a? Person
+      eval("#{object.class.name.underscore}_path(object, opts)")
+    else
+      person_path(person_params(object).merge(opts))
+    end
   end
 
   def object_fields(object)
@@ -105,7 +109,7 @@ module ApplicationHelper
       when "User"
         user_path(person)
       when "Person"
-        person_path(person)
+        person_path(person_params(person))
       else
         I18n.t('application.helper.unknown_person')
     end

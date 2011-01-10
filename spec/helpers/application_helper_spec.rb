@@ -11,7 +11,7 @@ describe ApplicationHelper do
   end
 
   it "should provide a correct show path for a given person" do
-    person_url(@person).should == "/people/#{@person.id}"
+    person_url(@person).should == "/people/#{@person.pod}/#{@person.username}"
   end
 
   it "should provide a correct show path for a given user" do
@@ -23,10 +23,10 @@ describe ApplicationHelper do
       object_path(nil).should == ""
     end
     it "returns person path if it's a person" do
-      object_path(@person).should == person_path(@person)
+      object_path(@person).should == person_path(person_params(@person))
     end
     it "returns person path if it's a user" do
-      object_path(@user).should == person_path(@user.person)
+      object_path(@user).should == person_path(person_params(@user.person))
     end
   end
 
@@ -38,7 +38,7 @@ describe ApplicationHelper do
       person_image_link(@person).should include(image_or_default(@person))
     end
     it "returns a link to the person's profile" do
-      person_image_link(@person).should include(person_path(@person))
+      person_image_link(@person).should include(person_path(person_params(@person)))
     end
   end
   

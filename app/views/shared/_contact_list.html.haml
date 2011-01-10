@@ -9,7 +9,7 @@
     - for hash in contact_hashes
       %li
         %span.name
-          = link_to hash[:person].name, hash[:person]
+          = link_to hash[:person].name, person_path(person_params(hash[:person]))
         .right
           = aspect_membership_button(aspect_id, hash[:contact], hash[:person])
 

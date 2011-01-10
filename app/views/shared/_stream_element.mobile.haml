@@ -7,7 +7,7 @@
 
   .content
     .from
-      = link_to post.person.name, post.person
+      = link_to post.person.name, person_path(person_params(post.person))
       .aspect
         ➔
         - if post.public?

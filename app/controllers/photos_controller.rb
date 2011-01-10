@@ -123,10 +123,10 @@ class PhotosController < ApplicationController
       if photo.status_message_id
         respond_with photo, :location => photo.status_message
       else
-        respond_with photo, :location => person_photos_path(current_user.person)
+        respond_with photo, :location => person_photos_path(person_params(current_user.person))
       end
     else
-      respond_with photo, :location => person_photos_path(current_user.person)
+      respond_with photo, :location => person_photos_path(person_params(current_user.person))
     end
 
   end
@@ -166,7 +166,7 @@ class PhotosController < ApplicationController
     if @photo = current_user.posts.where(:id => params[:id]).first
       respond_with @photo
     else
-      redirect_to person_photos_path(current_user.person)
+      redirect_to person_photos_path(person_params(current_user.person))
     end
   end
 
@@ -186,7 +186,7 @@ class PhotosController < ApplicationController
         end
       end
     else
-      redirect_to person_photos_path(current_user.person)
+      redirect_to person_photos_path(person_params(current_user.person))
     end
   end
 

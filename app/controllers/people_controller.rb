@@ -13,7 +13,7 @@ class PeopleController < ApplicationController
 
     @people = Person.search(params[:q]).paginate :page => params[:page], :per_page => 25, :order => 'created_at DESC'
     if @people.count == 1
-      redirect_to @people.first
+      redirect_to person_path(person_params(@people.first))
     else
       @hashes = hashes_for_people(@people, @aspects)
       #only do it if it is an email address

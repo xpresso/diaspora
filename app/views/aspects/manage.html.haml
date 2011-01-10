@@ -30,7 +30,7 @@
                 .x
                   X
                 .circle
-              = link_to person_image_tag(hash[:sender]), hash[:sender]
+              = link_to person_image_tag(hash[:sender]), person_path(person_params(hash[:sender]))
 
       = render 'shared/invitations', :invites => @invites
 
@@ -57,7 +57,7 @@
                 .x
                   X
                 .circle
-              = link_to person_image_tag(contact_hash[:person]), contact_hash[:person]
+              = link_to person_image_tag(contact_hash[:person]), person_path(person_params(contact_hash[:person]))
           .draggable_info
             =t('.drag_to_add')
 

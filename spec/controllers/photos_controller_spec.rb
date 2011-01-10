@@ -3,6 +3,7 @@
 #   the COPYRIGHT file.
 
 require 'spec_helper'
+include ApplicationHelper
 
 describe PhotosController do
   render_views
@@ -52,13 +53,13 @@ describe PhotosController do
 
   describe '#index' do
     it "displays the logged in user's pictures" do
-      get :index, :person_id => user1.person.id.to_s
+      get :index,  :pod => user1.person.pod, :username => user1.person.username
       assigns[:person].should == user1.person
       assigns[:posts].should == [photo1]
     end
 
     it 'sets the person to a contact if person_id is set' do
-      get :index, :person_id => user2.person.id.to_s
+      get :index, :pod => user2.person.pod, :username => user2.person.username
 
       assigns[:person].should == user2.person
       assigns[:posts].should be_empty
@@ -84,7 +85,7 @@ describe PhotosController do
 
     it 'does not let the user edit a photo that is not his' do
       get :edit, :id => photo2.id
-      response.should redirect_to(:action => :index, :person_id => user1.person.id.to_s)
+      response.should redirect_to(:action => :index, :pod => user1.person.pod, :username => user1.person.username)
     end
   end
 
@@ -117,7 +118,7 @@ describe PhotosController do
     it 'redirects if you do not have access to the post' do
       params = { :caption => "now with lasers!" }
       put :update, :id => photo2.id, :photo => params
-      response.should redirect_to(:action => :index, :person_id => user1.person.id.to_s)
+      response.should redirect_to(:action => :index, :pod => user1.person.pod, :username => user1.person.username)
     end
   end
 

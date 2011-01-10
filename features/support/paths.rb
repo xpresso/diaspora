@@ -1,3 +1,4 @@
+include ApplicationHelper
 module NavigationHelpers
   def path_to(page_name)
     case page_name
@@ -8,13 +9,13 @@ module NavigationHelpers
     when /^the ([\w ]+) page$/
       send("#{$1.gsub(/\W+/, '_')}_path")
     when /^my edit profile page$/
-      edit_person_path(@me.person)
+      edit_person_path(person_params(@me.person))
     when /^my acceptance form page$/
       accept_user_invitation_path(:invitation_token => @me.invitation_token)
     when /^the requestor's profile page$/
-      person_path(Request.where(:recipient_id => @me.person.id).first.sender)
+      person_path(person_params(Request.where(:recipient_id => @me.person.id).first.sender))
     when /^"([^\"]*)"'s page$/
-      person_path(User.find_by_email($1).person)
+      person_path(person_params(User.find_by_email($1).person))
     when /^"(\/.*)"/
       $1
     else

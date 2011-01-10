@@ -148,7 +148,7 @@ describe PeopleController do
       user2 = Factory.create(:user)
       connect_users(user, aspect, user2, user2.aspects.create(:name => 'Neuroscience'))
       get :index, :q => user2.person.profile.first_name.to_s
-      response.should redirect_to user2.person
+      response.should redirect_to person_path(person_params(user2.person))
     end
 
     it 'shows a non-contact' do
@@ -156,12 +156,12 @@ describe PeopleController do
       user2.person.profile.searchable = true
       user2.save
       get :index, :q => user2.person.profile.first_name.to_s
-      response.should redirect_to user2.person
+      response.should redirect_to person_path(person_params(user2.person))
     end
 
     it "redirects to person page if there is exactly one match" do
       get :index, :q => "Korth"
-      response.should redirect_to @korth
+      response.should redirect_to person_path(person_params(@korth))
     end
 
     it "does not redirect if there are no matches" do
@@ -176,43 +176,43 @@ describe PeopleController do
 
   describe '#show' do
     it 'goes to the current_user show page' do
-      get :show, :id => user.person.id
+      get :show, person_params(user.person)
       response.should be_success
     end
 
     it 'renders with a post' do
       user.post :status_message, :message => 'test more', :to => aspect.id
-      get :show, :id => user.person.id
+      get :show, person_params(user.person)
       response.should be_success
     end
 
     it 'renders with a post' do
       message = user.post :status_message, :message => 'test more', :to => aspect.id
       user.comment 'I mean it', :on => message
-      get :show, :id => user.person.id
+      get :show, person_params(user.person)
       response.should be_success
     end
 
     it "redirects to #index if the id is invalid" do
-      get :show, :id => 'delicious'
+      get :show, :pod => 'delicious', :username => 'sdf'
       response.should redirect_to people_path
     end
 
     it "redirects to #index if no person is found" do
-      get :show, :id => user.id
+      get :show, :pod => "stuff", :username => "bats"
       response.should redirect_to people_path
     end
 
     it "renders the show page of a contact" do
       user2 = Factory.create(:user)
       connect_users(user, aspect, user2, user2.aspects.create(:name => 'Neuroscience'))
-      get :show, :id => user2.person.id
+      get :show, person_params(user2.person)
       response.should be_success
     end
 
     it "renders the show page of a non-contact" do
       user2 = Factory.create(:user)
-      get :show, :id => user2.person.id
+      get :show, person_params(user2.person)
       response.should be_success
     end
 
@@ -220,7 +220,7 @@ describe PeopleController do
       user2 = Factory.create(:user)
       status_message = user2.post(:status_message, :message => "hey there", :to => 'all', :public => true)
 
-      get :show, :id => user2.person.id
+      get :show, person_params(user2.person) 
       response.body.should include status_message.message
     end
   end
@@ -234,22 +234,21 @@ describe PeopleController do
 
   describe '#update' do
     it "sets the flash" do
-      put :update, :id => user.person.id,
-        :profile => {
+      params = person_params(user.person)
+      params[:profile] = {
           :image_url  => "",
           :first_name => "Will",
           :last_name  => "Smith"
         }
+
+      put :update, params
       flash[:notice].should_not be_empty
     end
 
     context 'with a profile photo set' do
       before do
-        @params = { :id => user.person.id,
-                    :profile =>
-                     {:image_url => "",
-                      :last_name  => user.person.profile.last_name,
-                      :first_name => user.person.profile.first_name }}
+        @params =  person_params(user.person)
+        @params[:profile] = {:image_url => "", :last_name  => user.person.profile.last_name, :first_name => user.person.profile.first_name }
 
         user.person.profile.image_url = "http://tom.joindiaspora.com/images/user/tom.jpg"
         user.person.profile.save
@@ -265,13 +264,13 @@ describe PeopleController do
       person = user.person
       new_user = Factory.create(:user)
       person.owner_id.should == user.id
-      put :update, :id => user.person.id, :owner_id => new_user.id
+      put :update, person_params(user.person), :owner_id => new_user.id
       Person.find(person.id).owner_id.should == user.id
     end
 
     it 'does not overwrite the profile diaspora handle' do
-      handle_params = {:id => user.person.id,
-                       :profile => {:diaspora_handle => 'abc@a.com'} }
+      handle_params =  person_params(user.person)
+      handle_params[:profile] = {:diaspora_handle => 'abc@a.com'} 
       put :update, handle_params
       Person.find(user.person.id).profile[:diaspora_handle].should_not == 'abc@a.com'
     end
