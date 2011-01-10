@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110105051803) do
+ActiveRecord::Schema.define(:version => 20110110023610) do
 
   create_table "aspect_memberships", :force => true do |t|
     t.integer  "aspect_id"
@@ -271,6 +271,17 @@ ActiveRecord::Schema.define(:version => 20110105051803) do
     t.datetime "updated_at"
     t.string   "mongo_id"
   end
+
+  create_table "notification_actors", :force => true do |t|
+    t.integer  "notifications_id"
+    t.integer  "person_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "notification_actors", ["notifications_id", "person_id"], :name => "index_notification_actors_on_notifications_id_and_person_id", :unique => true
+  add_index "notification_actors", ["notifications_id"], :name => "index_notification_actors_on_notifications_id"
+  add_index "notification_actors", ["person_id"], :name => "index_notification_actors_on_person_id"
 
   create_table "notifications", :force => true do |t|
     t.string   "target_type"
