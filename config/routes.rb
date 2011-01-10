@@ -22,10 +22,10 @@ Diaspora::Application.routes.draw do
   #end
 
   match "/people" =>"people#index", :as => 'people', :via => :get                                
-  match "/people/:pod/:username/edit" => "people#edit", :as => 'edit_person', :via => :get, :constraints => {:pod => /[^\/]*\.[^\/]*/}
-  match '/people/:pod/:username' => 'people#show', :as => 'person', :via => :get, :constraints => {:pod => /[^\/]*\.[^\/]*/}
-  match '/people/:pod/:username' => 'people#update', :via => :put, :constraints => {:pod => /[^\/]*\.[^\/]*/}
-  match '/people/:pod/:username' => 'people#destroy', :via => :delete, :constraints => {:pod => /[^\/]*\.[^\/]*/}
+  match "/people/:pod/:username/edit" => "people#edit", :as => 'edit_person', :via => :get, :constraints => {:pod => /[^\/#?]\.*/}
+  match '/people/:pod/:username' => 'people#show', :as => 'person', :via => :get, :constraints => {:pod => /[^\/#?]\.*/}
+  match '/people/:pod/:username' => 'people#update', :via => :put, :constraints => {:pod => /[^\/#?]\.*/}
+  match '/people/:pod/:username' => 'people#destroy', :via => :delete, :constraints => {:pod =>/[^\/#?]\.*/}
  
 
   scope 'people' do
