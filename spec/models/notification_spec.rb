@@ -110,12 +110,6 @@ describe Notification do
         @n.should_receive(:email_the_user).once
         Notification.notify(@user, @request, @person)
       end
-
-      it 'does not email with emails disabled' do
-        @user.disable_mail = true
-        @n.should_not_receive(:email_the_user)
-        Notification.notify(@user, @request, @person)
-      end
     end
   end
 end
