@@ -37,12 +37,13 @@ module NotificationsHelper
     if count > 0
       link_to new_notification_text(count), notifications_path
     end
-    def notification_people_link(note)
-      note.people.collect{ |person| link_to("#{person.name.titlecase}", person_path(person))}.join(" , ").html_safe
-    end
+  end
 
-    def peoples_names(note)
-      note.people.map{|p| p.name}.join(",")
-    end
+  def notification_people_link(note)
+    note.people.collect{ |person| link_to("#{person.name.titlecase}", person_path(person))}.join(" , ").html_safe
+  end
+
+  def peoples_names(note)
+    note.people.map{|p| p.name}.join(",")
   end
 end
